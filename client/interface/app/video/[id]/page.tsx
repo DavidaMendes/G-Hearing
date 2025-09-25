@@ -130,7 +130,6 @@ export default function VideoDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -142,7 +141,7 @@ export default function VideoDetailsPage() {
                 </Link>
               </Button>
               <div className="flex items-center gap-3">
-                <GloboLogo size="sm" variant="blue" />
+                {/* <GloboLogo size="sm" variant="blue" /> */}
                 <div>
                   <h1 className="text-lg font-bold text-globo-blue-gradient">G-hearing</h1>
                   <p className="text-xs text-muted-foreground">Detalhes do Vídeo</p>

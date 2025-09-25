@@ -15,7 +15,7 @@ export function AuthLayout({ children, title, subtitle, logoVariant = "orange" }
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <GloboLogo size="lg" variant={logoVariant} />
+            {/* <GloboLogo size="lg" variant={logoVariant} /> */}
           </div>
           <div className="space-y-2">
             <h1 className={`text-3xl font-bold text-globo-${logoVariant}-gradient`}>G-hearing</h1>

@@ -73,7 +73,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <GloboLogo size="md" variant="orange" />
+              {/* <GloboLogo size="md" variant="orange" /> */}
               <div>
                 <h1 className="text-xl font-bold text-globo-orange-gradient">G-hearing</h1>
                 <p className="text-sm text-muted-foreground">Dashboard</p>
