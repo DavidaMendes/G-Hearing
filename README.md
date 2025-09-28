@@ -8,6 +8,9 @@ Sistema de reconhecimento de música em vídeos usando IA para identificar times
 - [Docker](https://www.docker.com/get-started) instalado
 - [Node.js](https://nodejs.org/) (versão 18 ou superior)
 - [npm](https://www.npmjs.com/) ou [pnpm](https://pnpm.io/)
+- [FFmpeg](https://ffmpeg.org/download.html) instalado (para processamento de vídeo/áudio)
+- [Python 3](https://www.python.org/downloads/) (versão 3.8 ou superior)
+- Bibliotecas Python: `numpy` e `pydub`
 
 ### 1. Clone o repositório
 ```bash
@@ -24,7 +27,31 @@ docker-compose up -d
 docker-compose ps
 ```
 
-### 3. Configure o servidor (Backend)
+### 3. Instale o FFmpeg
+```bash
+# macOS (usando Homebrew)
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install ffmpeg
+
+# Windows (usando Chocolatey)
+choco install ffmpeg
+
+# Ou baixe diretamente de: https://ffmpeg.org/download.html
+```
+
+### 4. Instale as dependências Python
+```bash
+# Instalar numpy e pydub
+pip install numpy pydub
+
+# Ou se preferir usar pip3
+pip3 install numpy pydub
+```
+
+### 5. Configure o servidor (Backend)
 ```bash
 # Entre na pasta do servidor
 cd server
@@ -46,7 +73,7 @@ npx prisma generate
 npm run dev
 ```
 
-### 4. Configure o cliente (Frontend)
+### 6. Configure o cliente (Frontend)
 ```bash
 # Em outro terminal, entre na pasta do cliente
 cd client/interface
@@ -113,6 +140,12 @@ PORT=3333
 curl -X POST http://localhost:3333/api/users/auth \
   -H "Content-Type: application/json" \
   -d '{"email": "admin@ghearing.com", "password": "senha"}'
+```
+
+### Processar vídeo e detectar música
+```bash
+curl -X POST http://localhost:3333/api/videos/process \
+  -F "video=@/caminho/para/seu/video.mp4"
 ```
 
 ### Health check
