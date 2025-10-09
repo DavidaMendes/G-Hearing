@@ -19,10 +19,10 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-	if (file.mimetype.startsWith('video/')) {
+	if (file.originalname.toLowerCase().endsWith('.mxf')) {
 		cb(null, true);
 	} else {
-		cb(new Error('Apenas arquivos de vídeo são permitidos!'));
+		cb(new Error('Apenas arquivos .mxf são permitidos!'));
 	}
 };
 
@@ -30,7 +30,7 @@ export const upload = multer({
 	storage: storage,
 	fileFilter: fileFilter,
 	limits: {
-		fileSize: 500 * 1024 * 1024,
+		fileSize: 2 * 1024 * 1024 * 1024, // 2GB
 		files: 1
 	}
 });

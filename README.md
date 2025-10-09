@@ -124,7 +124,13 @@ npx prisma studio
 DATABASE_URL="postgresql://ghearing:password@localhost:5432/db_ghearing?schema=public"
 JWT_SECRET="seu-jwt-secret-aqui"
 PORT=3333
+REQUEST_TIMEOUT=1800000
 ```
+
+### Configurações de timeout
+- **REQUEST_TIMEOUT**: Timeout das requisições em milissegundos (padrão: 1800000 = 30 minutos)
+- **Limite de arquivo**: 2GB máximo
+- **Timeout do servidor**: 30 minutos
 
 ### Acesso ao banco local
 - **Host**: localhost
@@ -145,7 +151,9 @@ curl -X POST http://localhost:3333/api/users/auth \
 ### Processar vídeo e detectar música
 ```bash
 curl -X POST http://localhost:3333/api/videos/process \
-  -F "video=@/caminho/para/seu/video.mp4"
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -F "video=@/caminho/para/seu/video.mxf" \
+  -F "title=Meu Vídeo Teste"
 ```
 
 ### Health check
@@ -192,12 +200,19 @@ G-Hearing/
 ## 📝 Funcionalidades
 
 - ✅ Autenticação de usuários com JWT
-- ✅ Upload de vídeos
+- ✅ Upload de vídeos (formato .mxf obrigatório)
 - ✅ Separação de áudio de vídeos
 - ✅ Reconhecimento de timestamps de música
 - ✅ Recorte de áudio em partes
 - ✅ Reconhecimento de músicas via audd.io
 - ✅ Armazenamento de dados no banco
+
+## 📋 Especificações técnicas
+
+- **Formato de vídeo**: Apenas arquivos .mxf são aceitos
+- **Tamanho máximo**: 2GB por arquivo
+- **Autenticação**: JWT obrigatório para upload
+- **Processamento**: Extração automática de áudio + detecção de música
 
 ## 🚨 Solução de problemas
 

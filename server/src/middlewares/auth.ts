@@ -6,8 +6,8 @@ interface AuthRequest extends Request {
 }
 
 export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
-	const authHeader = req.headers['authorization'];
-	const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+	const authHeader = req.headers['authorization'] as string;
+	const token = authHeader?.split(' ')[1];
 
 	if (!token) {
 		return res.status(401).json({

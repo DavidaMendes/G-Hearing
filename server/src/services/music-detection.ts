@@ -23,10 +23,14 @@ export class MusicDetectionService {
 					const segmentsMatch = output.match(/SEGMENTS:(\[.*\])/);
 					if (segmentsMatch) {
 						try {
-							const segments = JSON.parse(segmentsMatch[1] || '[]');
+							let jsonString = segmentsMatch[1] || '[]';
+							jsonString = jsonString.replace(/'/g, '"');
+							console.log('JSON string do Python:', jsonString);
+							const segments = JSON.parse(jsonString);
 							resolve(segments);
 						} catch (error) {
 							console.error('Erro ao parsear segmentos:', error);
+							console.error('Output completo do Python:', output);
 							reject(new Error('Erro ao parsear segmentos do Python'));
 						}
 					} else {

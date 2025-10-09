@@ -25,11 +25,10 @@ export class VideoService {
 			console.log(`📝 Título: ${title}`);
 			console.log(`👤 User ID: ${userId}`);
 
-			// 1. Extrair áudio do vídeo
-			audioPath = await this.ffmpegService.extractAudio(videoPath);
+			audioPath = await this.ffmpegService.extractAudioFromMXF(videoPath);
 			console.log(`🎵 Áudio extraído: ${audioPath}`);
 
-			// 2. Detectar segmentos de música no áudio
+			console.log('🔍 Iniciando detecção de segmentos de música...');
 			const segments = await this.musicDetectionService.detectSegments(audioPath);
 			console.log(`✅ Segmentos detectados: ${segments.length}`);
 
@@ -48,14 +47,11 @@ export class VideoService {
 				console.log(`   ${index + 1}. ${segment[0]} - ${segment[1]}`);
 			});
 
-			// 3. Recortar áudio nos timestamps dos segmentos
 			cutFiles = await this.audioCutterService.cutAllSegments(audioPath, segments);
 			console.log(`✂️ ${cutFiles.length} segmentos recortados`);
 
-			// 4. Enviar cada recorte para audd.io
 			const recognitionResults = await this.auddService.recognizeAllSegments(cutFiles);
 
-			// 5. Processar resultados
 			const recognizedSongs = recognitionResults
 				.map((result, index) => ({
 					segment: segments[index],
@@ -66,6 +62,8 @@ export class VideoService {
 			console.log(
 				`🎵 ${recognizedSongs.length} músicas reconhecidas de ${segments.length} segmentos`
 			);
+
+			console.log(`💾 Arquivo de áudio mantido: ${audioPath}`);
 
 			return {
 				success: true,
@@ -88,12 +86,12 @@ export class VideoService {
 				audioPath
 			};
 		} finally {
-			// Limpar arquivos temporários
-			if (audioPath) {
-				await this.ffmpegService.cleanupFile(audioPath);
-			}
 			if (cutFiles.length > 0) {
+				console.log(`🗑️ Limpando ${cutFiles.length} segmentos recortados`);
 				await this.audioCutterService.cleanupFiles(cutFiles);
+			}
+			if (audioPath) {
+				console.log(`💾 Arquivo de áudio preservado: ${audioPath}`);
 			}
 		}
 	}

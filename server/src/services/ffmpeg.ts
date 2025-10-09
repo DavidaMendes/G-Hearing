@@ -2,23 +2,20 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 
 export class FFmpegService {
-	async extractAudio(videoPath: string): Promise<string> {
+	async extractAudioFromMXF(videoPath: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			const audioPath = videoPath.replace(/\.[^/.]+$/, '.mp3');
+			const audioPath = videoPath.replace(/\.[^/.]+$/, '.wav');
 
-			console.log(`🎬 Extraindo áudio de: ${videoPath}`);
+			console.log(`🎬 Extraindo áudio de MXF: ${videoPath}`);
 			console.log(`🎵 Para: ${audioPath}`);
 
 			const ffmpeg = spawn('ffmpeg', [
-				'-i',
-				videoPath,
+				'-i', videoPath,
 				'-vn',
-				'-acodec',
-				'mp3',
-				'-ab',
-				'192k',
-				'-ar',
-				'44100',
+				'-acodec', 'pcm_s16le',
+				'-ar', '48000',
+				'-ac', '2',
+				'-af', 'aresample=resampler=soxr',
 				'-y',
 				audioPath
 			]);
@@ -31,16 +28,16 @@ export class FFmpegService {
 
 			ffmpeg.on('close', (code) => {
 				if (code === 0) {
-					console.log('✅ Áudio extraído com sucesso!');
+					console.log('✅ Áudio extraído do MXF com sucesso!');
 					resolve(audioPath);
 				} else {
-					console.error('❌ Erro ao extrair áudio:', errorOutput);
-					reject(new Error(`FFmpeg falhou: ${errorOutput}`));
+					console.error('❌ Erro ao extrair áudio do MXF:', errorOutput);
+					reject(new Error(`FFmpeg falhou ao processar MXF: ${errorOutput}`));
 				}
 			});
 
 			ffmpeg.on('error', (error) => {
-				console.error('❌ Erro ao executar FFmpeg:', error);
+				console.error('❌ Erro ao executar FFmpeg no MXF:', error);
 				reject(new Error(`Erro ao executar FFmpeg: ${error.message}`));
 			});
 		});

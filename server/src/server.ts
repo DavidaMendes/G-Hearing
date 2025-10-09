@@ -5,7 +5,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3333;
 
-app.listen(
+const server = app.listen(
 	{
 		host: '0.0.0.0',
 		port: PORT
@@ -14,3 +14,7 @@ app.listen(
 		console.log('HTTP Server is running on port ' + PORT);
 	}
 );
+
+const TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT || '1800000');
+
+server.timeout = TIMEOUT;

@@ -14,13 +14,10 @@ export interface AuddResponse {
 
 export class AuddService {
 	async recognizeMusic(audioFilePath: string): Promise<AuddResponse> {
-		// Mock da API audd.io
 		console.log(`🎵 Enviando para audd.io: ${audioFilePath}`);
 
-		// Simular delay da API
 		await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000));
 
-		// Mock: 70% de chance de reconhecer a música
 		const shouldRecognize = Math.random() < 0.7;
 
 		if (shouldRecognize) {
