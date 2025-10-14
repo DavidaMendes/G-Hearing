@@ -30,17 +30,14 @@ export default function RegisterPage() {
       alert("As senhas não coincidem")
       return
     }
-    // TODO: Implement registration logic
     console.log("Registration attempt:", formData)
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-card p-4">
       <div className="w-full max-w-md space-y-8">
-        {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            {/* <GloboLogo size="lg" variant="teal" /> */}
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-bold text-globo-teal-gradient">G-hearing</h1>
@@ -48,7 +45,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Registration Form */}
         <Card className="border-border/50 shadow-2xl">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-semibold">Cadastrar</CardTitle>
@@ -162,7 +158,6 @@ export default function RegisterPage() {
           </CardContent>
         </Card>
 
-        {/* Footer */}
         <div className="text-center text-xs text-muted-foreground">
           <p>© 2025 Globo. Todos os direitos reservados.</p>
         </div>

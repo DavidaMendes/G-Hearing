@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// Mock data for videos
 const mockVideos = [
   {
     id: "1",
@@ -110,9 +109,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -159,7 +156,6 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Actions Bar */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8">
           <div className="flex flex-1 items-center gap-4">
             <div className="relative flex-1 max-w-md">
@@ -183,7 +179,6 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        {/* Videos Grid */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Seus Vídeos</h2>
@@ -223,7 +218,6 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* Upload Modal */}
       <UploadVideoModal open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen} />
     </div>
   )

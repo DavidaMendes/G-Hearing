@@ -46,13 +46,11 @@ export function EditVideoModal({ video, open, onOpenChange }: EditVideoModalProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement video update logic
     console.log("Update video:", { id: video?.id, ...formData })
     onOpenChange(false)
   }
 
   const handleCancel = () => {
-    // Reset form to original values
     setFormData({
       name: video?.name || "",
       materialDate: video?.materialDate || "",

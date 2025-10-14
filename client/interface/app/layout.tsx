@@ -5,7 +5,7 @@ import { GeistMono } from 'geist/font/mono';import "./globals.css"
 export const metadata = {
   title: "G-hearing | Globo",
   description: "Sistema de reconhecimento de áudio com IA para identificação de músicas e trilhas sonoras",
-    generator: 'v0.app'
+    generator: 'Caio'
 }
 
 export default function RootLayout({
