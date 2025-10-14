@@ -48,7 +48,6 @@ const mockMusicTracks = [
     genres: "Instrumental, News",
     label: "Global Music",
     recordCompany: "Universal Music",
-    copyrightStatus: "licensed" as const,
     bpm: 120,
     keyAndMode: "C Major",
     mood: "Dramatic, Urgent",
@@ -67,7 +66,6 @@ const mockMusicTracks = [
     genres: "Ambient, Corporate",
     label: "Business Audio",
     recordCompany: "Sony Music",
-    copyrightStatus: "pending" as const,
     bpm: 85,
     keyAndMode: "A Minor",
     mood: "Professional, Calm",
@@ -86,7 +84,6 @@ const mockMusicTracks = [
     genres: "Rock, Sports",
     label: "Action Music",
     recordCompany: "Warner Music",
-    copyrightStatus: "unlicensed" as const,
     bpm: 140,
     keyAndMode: "E Major",
     mood: "Energetic, Powerful",
@@ -117,14 +114,14 @@ export default function VideoDetailsPage() {
     setSelectedMusic(music)
   }
 
-  const getCopyrightBadge = (status: "licensed" | "pending" | "unlicensed") => {
+  const getCopyrightBadge = (status: "processed" | "processing" | "error") => {
     switch (status) {
-      case "licensed":
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Licenciado</Badge>
-      case "pending":
-        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Pendente</Badge>
-      case "unlicensed":
-        return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Não Licenciado</Badge>
+      case "processed":
+        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Processado</Badge>
+      case "processing":
+        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Processando</Badge>
+      case "error":
+        return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Erro</Badge>
     }
   }
 
@@ -141,7 +138,6 @@ export default function VideoDetailsPage() {
                 </Link>
               </Button>
               <div className="flex items-center gap-3">
-                {/* <GloboLogo size="sm" variant="blue" /> */}
                 <div>
                   <h1 className="text-lg font-bold text-globo-blue-gradient">G-hearing</h1>
                   <p className="text-xs text-muted-foreground">Detalhes do Vídeo</p>
@@ -216,12 +212,11 @@ export default function VideoDetailsPage() {
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center gap-2">{getCopyrightBadge("licensed")}</div>
+                  <div className="flex items-center gap-2">{getCopyrightBadge(mockVideo.status)}</div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Actions Bar */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="flex flex-1 items-center gap-4">
                 <div className="relative flex-1 max-w-md">
@@ -245,7 +240,6 @@ export default function VideoDetailsPage() {
               </Button>
             </div>
 
-            {/* Music Tracks List */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Músicas Identificadas</h2>
@@ -281,7 +275,6 @@ export default function VideoDetailsPage() {
         </div>
       </main>
 
-      {/* Modals */}
       <MusicDetailsModal
         music={selectedMusic}
         open={!!selectedMusic}

@@ -75,10 +75,6 @@ export function VideoCard({ video }: VideoCardProps) {
                     Ver detalhes
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Editar
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive">
                   <Trash2 className="h-4 w-4 mr-2" />

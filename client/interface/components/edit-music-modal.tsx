@@ -30,7 +30,6 @@ interface MusicTrack {
   genres: string
   label: string
   recordCompany: string
-  copyrightStatus: "licensed" | "pending" | "unlicensed"
   bpm: number
   keyAndMode: string
   mood: string
@@ -56,7 +55,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
     genres: music?.genres || "",
     label: music?.label || "",
     recordCompany: music?.recordCompany || "",
-    copyrightStatus: music?.copyrightStatus || "pending",
     bpm: music?.bpm || 120,
     keyAndMode: music?.keyAndMode || "",
     mood: music?.mood || "",
@@ -68,13 +66,11 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement music update logic
     console.log("Update music:", { id: music?.id, ...formData })
     onOpenChange(false)
   }
 
   const handleCancel = () => {
-    // Reset form to original values
     if (music) {
       setFormData({
         title: music.title,
@@ -89,7 +85,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
         genres: music.genres,
         label: music.label,
         recordCompany: music.recordCompany,
-        copyrightStatus: music.copyrightStatus,
         bpm: music.bpm,
         keyAndMode: music.keyAndMode,
         mood: music.mood,
@@ -207,7 +202,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
             </div>
           </div>
 
-          {/* Credits */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <User className="h-5 w-5" />
@@ -279,7 +273,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
               <div className="space-y-2">
                 <Label htmlFor="copyrightStatus">Status de Direitos</Label>
                 <Select
-                  value={formData.copyrightStatus}
                   onValueChange={(value) => handleInputChange("copyrightStatus", value)}
                 >
                   <SelectTrigger>
