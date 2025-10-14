@@ -96,7 +96,6 @@ export function MusicDetailsModal({ music, open, onOpenChange }: MusicDetailsMod
             </CardContent>
           </Card>
 
-          {/* Timing Information */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -118,7 +117,6 @@ export function MusicDetailsModal({ music, open, onOpenChange }: MusicDetailsMod
             </CardContent>
           </Card>
 
-          {/* Credits */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -139,7 +137,6 @@ export function MusicDetailsModal({ music, open, onOpenChange }: MusicDetailsMod
             </CardContent>
           </Card>
 
-          {/* Label & Company */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -167,7 +164,6 @@ export function MusicDetailsModal({ music, open, onOpenChange }: MusicDetailsMod
             </CardContent>
           </Card>
 
-          {/* Technical Details */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">

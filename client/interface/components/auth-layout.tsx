@@ -12,10 +12,8 @@ export function AuthLayout({ children, title, subtitle, logoVariant = "orange" }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-card p-4">
       <div className="w-full max-w-md space-y-8">
-        {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            {/* <GloboLogo size="lg" variant={logoVariant} /> */}
           </div>
           <div className="space-y-2">
             <h1 className={`text-3xl font-bold text-globo-${logoVariant}-gradient`}>G-hearing</h1>
@@ -25,7 +23,6 @@ export function AuthLayout({ children, title, subtitle, logoVariant = "orange" }
 
         {children}
 
-        {/* Footer */}
         <div className="text-center text-xs text-muted-foreground">
           <p>© 2025 Globo. Todos os direitos reservados.</p>
         </div>

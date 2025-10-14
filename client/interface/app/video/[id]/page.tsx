@@ -21,7 +21,6 @@ import {
 import Link from "next/link"
 import { useParams } from "next/navigation"
 
-// Mock data for video and music tracks
 const mockVideo = {
   id: "1",
   name: "Jornal Nacional - Edição 15/01",
@@ -174,17 +173,13 @@ export default function VideoDetailsPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Video Information */}
           <div className="lg:col-span-1">
             <VideoInfoCard video={mockVideo} onEdit={() => setIsEditVideoModalOpen(true)} />
           </div>
 
-          {/* Music Tracks */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Music Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

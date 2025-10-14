@@ -66,10 +66,8 @@ export function UploadVideoModal({ open, onOpenChange }: UploadVideoModalProps) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement video upload logic
     console.log("Upload video:", { formData, selectedFile })
     onOpenChange(false)
-    // Reset form
     setFormData({ name: "", materialDate: "", description: "" })
     setSelectedFile(null)
   }

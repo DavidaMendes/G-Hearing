@@ -50,7 +50,6 @@ export function MusicTrackCard({ track, onEdit, onViewDetails }: MusicTrackCardP
               </div>
             </div>
 
-            {/* Track Info Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
               <div className="space-y-1">
                 <p className="text-muted-foreground">ISRC</p>
@@ -76,7 +75,6 @@ export function MusicTrackCard({ track, onEdit, onViewDetails }: MusicTrackCardP
               </div>
             </div>
 
-            {/* Additional Info */}
             <div className="space-y-2 text-xs">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Music className="h-3 w-3" />

@@ -108,7 +108,6 @@
   background: linear-gradient(135deg, rgb(var(--globo-pink)) 0%, rgb(var(--globo-magenta)) 100%);
 }
 
-/* Text gradients */
 .text-globo-orange-gradient {
   background: linear-gradient(135deg, rgb(var(--globo-orange)) 0%, rgb(var(--globo-yellow)) 100%);
   -webkit-background-clip: text;
@@ -137,7 +136,6 @@
   background-clip: text;
 }
 
-/* Custom animations */
 @keyframes pulse-glow {
   0%,
   100% {
@@ -152,7 +150,6 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }

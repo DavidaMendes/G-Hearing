@@ -54,7 +54,6 @@ export function VideoInfoCard({ video, onEdit }: VideoInfoCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Thumbnail */}
         <div className="aspect-video relative overflow-hidden rounded-lg">
           <Image src={video.thumbnail || "/placeholder.svg"} alt={video.name} fill className="object-cover" />
           <div className="absolute bottom-2 right-2">
@@ -65,7 +64,6 @@ export function VideoInfoCard({ video, onEdit }: VideoInfoCardProps) {
           </div>
         </div>
 
-        {/* Video Details */}
         <div className="space-y-3">
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">

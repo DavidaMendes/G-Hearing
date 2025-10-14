@@ -104,7 +104,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Music className="h-5 w-5" />
@@ -159,7 +158,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
             </div>
           </div>
 
-          {/* Timing */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Clock className="h-5 w-5" />
@@ -229,7 +227,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
             </div>
           </div>
 
-          {/* Label & Company */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Building className="h-5 w-5" />
@@ -257,7 +254,6 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
             </div>
           </div>
 
-          {/* Additional Info */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Informações Adicionais</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
