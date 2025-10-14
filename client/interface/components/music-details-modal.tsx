@@ -19,7 +19,6 @@ interface MusicTrack {
   genres: string
   label: string
   recordCompany: string
-  copyrightStatus: "licensed" | "pending" | "unlicensed"
   bpm: number
   keyAndMode: string
   mood: string
@@ -33,17 +32,6 @@ interface MusicDetailsModalProps {
 
 export function MusicDetailsModal({ music, open, onOpenChange }: MusicDetailsModalProps) {
   if (!music) return null
-
-  const getCopyrightBadge = (status: MusicTrack["copyrightStatus"]) => {
-    switch (status) {
-      case "licensed":
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Licenciado</Badge>
-      case "pending":
-        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Pendente</Badge>
-      case "unlicensed":
-        return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Não Licenciado</Badge>
-    }
-  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
@@ -62,7 +50,6 @@ export function MusicDetailsModal({ music, open, onOpenChange }: MusicDetailsMod
               <DialogTitle className="text-xl">{music.title}</DialogTitle>
               <DialogDescription className="text-base">{music.album}</DialogDescription>
             </div>
-            {getCopyrightBadge(music.copyrightStatus)}
           </div>
         </DialogHeader>
 

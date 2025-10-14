@@ -23,7 +23,6 @@ interface MusicTrack {
   authors: string
   performers: string
   genres: string
-  copyrightStatus: "licensed" | "pending" | "unlicensed"
 }
 
 interface MusicTrackCardProps {
@@ -33,16 +32,6 @@ interface MusicTrackCardProps {
 }
 
 export function MusicTrackCard({ track, onEdit, onViewDetails }: MusicTrackCardProps) {
-  const getCopyrightBadge = (status: MusicTrack["copyrightStatus"]) => {
-    switch (status) {
-      case "licensed":
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Licenciado</Badge>
-      case "pending":
-        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Pendente</Badge>
-      case "unlicensed":
-        return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Não Licenciado</Badge>
-    }
-  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR")
@@ -59,7 +48,6 @@ export function MusicTrackCard({ track, onEdit, onViewDetails }: MusicTrackCardP
                 <h3 className="font-semibold text-sm leading-tight">{track.title}</h3>
                 <p className="text-xs text-muted-foreground">{track.album}</p>
               </div>
-              {getCopyrightBadge(track.copyrightStatus)}
             </div>
 
             {/* Track Info Grid */}

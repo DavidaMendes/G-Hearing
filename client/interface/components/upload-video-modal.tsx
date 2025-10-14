@@ -91,10 +91,9 @@ export function UploadVideoModal({ open, onOpenChange }: UploadVideoModalProps) 
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* File Upload Area */}
           <div className="space-y-2">
             <Label>Arquivo de Vídeo</Label>
-            <div
+              <div
               className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
                 isDragging
                   ? "border-primary bg-primary/5"
@@ -137,14 +136,13 @@ export function UploadVideoModal({ open, onOpenChange }: UploadVideoModalProps) 
                     type="file"
                     accept="video/*"
                     onChange={handleFileInputChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    className="absolute inset-x-5 top-[100px] bottom-[335px] opacity-0 cursor-pointer"
                   />
                 </div>
               )}
-            </div>
+              </div>
           </div>
 
-          {/* Video Information */}
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome do Vídeo</Label>
