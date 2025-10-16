@@ -4,8 +4,8 @@ import path from 'path';
 export class MusicDetectionService {
 	async detectSegments(audioPath: string): Promise<string[][]> {
 		return new Promise((resolve, reject) => {
-			const pythonScript = path.join(process.cwd(), 'music-recognizer.py');
-			const python = spawn('python3', [pythonScript, audioPath]);
+			const pythonScript = path.join(process.cwd(), 'music-detector-broadcast.py');
+			const python = spawn('python3', [pythonScript, audioPath, 'medium']);
 
 			let output = '';
 			let errorOutput = '';

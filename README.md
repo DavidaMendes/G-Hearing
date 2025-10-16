@@ -51,6 +51,30 @@ pip install numpy pydub
 pip3 install numpy pydub
 ```
 
+## 🎙️ Detecção de Música em Broadcast
+
+O projeto usa um detector **otimizado para matérias jornalísticas** que detecta música de fundo mesmo com voz principal por cima.
+
+### Características:
+- ✅ Detecta música de fundo em reportagens
+- ✅ Funciona com voz + música simultaneamente
+- ✅ Sensibilidade configurável (low, medium, high)
+- ✅ Análise harmônica + padrões rítmicos
+- ✅ **Divide automaticamente segmentos > 15s** (limitação da API de reconhecimento)
+
+### Testar manualmente:
+```bash
+cd server
+
+# Sensibilidade média (padrão)
+python3 music-detector-broadcast.py uploads/audio.wav
+
+# Música muito baixa (sensibilidade alta)
+python3 music-detector-broadcast.py uploads/audio.wav high
+```
+
+**Documentação completa**: `server/BROADCAST_MUSIC_DETECTION.md`
+
 ### 5. Configure o servidor (Backend)
 ```bash
 # Entre na pasta do servidor

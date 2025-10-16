@@ -37,58 +37,13 @@ export class AudioCutterService {
 				return;
 			}
 
-			console.log(`✂️ Recortando áudio: ${startTime} (${startSeconds}s) - ${endTime} (${endSeconds}s)`);
+		console.log(`✂️ Recortando áudio: ${startTime} (${startSeconds}s) - ${endTime} (${endSeconds}s)`);
 
-			this.tryCutWithCopy(audioPath, startSeconds, endSeconds, outputPath)
-				.then(resolve)
-				.catch(() => {
-					console.log('🔄 Copy falhou, tentando re-encoding...');
-					this.cutWithReencoding(audioPath, startSeconds, endSeconds, outputPath)
-						.then(resolve)
-						.catch(reject);
-				});
-		});
-	}
-
-	private async tryCutWithCopy(
-		audioPath: string,
-		startSeconds: string,
-		endSeconds: string,
-		outputPath: string
-	): Promise<string> {
-		return new Promise((resolve, reject) => {
-			const ffmpeg = spawn('ffmpeg', [
-				'-i',
-				audioPath,
-				'-ss',
-				startSeconds,
-				'-to',
-				endSeconds,
-				'-c',
-				'copy',
-				'-y',
-				outputPath
-			]);
-
-			let errorOutput = '';
-
-			ffmpeg.stderr.on('data', (data) => {
-				errorOutput += data.toString();
-			});
-
-			ffmpeg.on('close', (code) => {
-				if (code === 0) {
-					console.log(`✅ Áudio recortado (copy): ${outputPath}`);
-					resolve(outputPath);
-				} else {
-					reject(new Error(`Copy falhou: ${errorOutput}`));
-				}
-			});
-
-			ffmpeg.on('error', (error) => {
-				reject(new Error(`Erro ao executar FFmpeg: ${error.message}`));
-			});
-		});
+		// Ir direto para re-encoding (WAV -> MP3 sempre precisa re-encodar)
+		this.cutWithReencoding(audioPath, startSeconds, endSeconds, outputPath)
+			.then(resolve)
+			.catch(reject);
+	});
 	}
 
 	private async cutWithReencoding(
@@ -121,17 +76,17 @@ export class AudioCutterService {
 				errorOutput += data.toString();
 			});
 
-			ffmpeg.on('close', (code) => {
-				if (code === 0) {
-					console.log(`✅ Áudio recortado (re-encoding): ${outputPath}`);
-					resolve(outputPath);
-				} else {
-					console.error('❌ Erro ao recortar áudio (re-encoding):');
-					console.error('Comando FFmpeg:', `ffmpeg -i "${audioPath}" -ss ${startSeconds} -to ${endSeconds} -acodec libmp3lame -ab 192k -ar 44100 -y "${outputPath}"`);
-					console.error('Erro FFmpeg:', errorOutput);
-					reject(new Error(`FFmpeg falhou ao recortar: ${errorOutput}`));
-				}
-			});
+		ffmpeg.on('close', (code) => {
+			if (code === 0) {
+				console.log(`✅ Áudio recortado: ${outputPath}`);
+				resolve(outputPath);
+			} else {
+				console.error('❌ Erro ao recortar áudio:');
+				console.error('Comando FFmpeg:', `ffmpeg -i "${audioPath}" -ss ${startSeconds} -to ${endSeconds} -acodec libmp3lame -ab 192k -ar 44100 -y "${outputPath}"`);
+				console.error('Erro FFmpeg:', errorOutput);
+				reject(new Error(`FFmpeg falhou ao recortar: ${errorOutput}`));
+			}
+		});
 
 			ffmpeg.on('error', (error) => {
 				console.error('❌ Erro ao executar FFmpeg:', error);
