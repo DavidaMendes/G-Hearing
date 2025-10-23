@@ -4,6 +4,7 @@ import { AudioCutterService } from './audio-cutter.js';
 import { AuddService } from './audd.js';
 import { DatabaseService } from './database.js';
 import fs from 'fs';
+import path from 'path';
 
 export class VideoService {
 	private musicDetectionService: MusicDetectionService;
@@ -158,12 +159,19 @@ export class VideoService {
 				videoId: videoRecord?.id
 			};
 		} finally {
-			if (cutFiles.length > 0) {
-				console.log(`🗑️ Limpando ${cutFiles.length} segmentos recortados`);
-				await this.audioCutterService.cleanupFiles(cutFiles);
-			}
-			if (audioPath) {
-				console.log(`💾 Arquivo de áudio preservado: ${audioPath}`);
+			const uploadsDir = path.dirname(videoPath);
+
+			if (fs.existsSync(uploadsDir)) {
+				const files = fs.readdirSync(uploadsDir);
+
+				for (const file of files) {
+					const filePath = path.join(uploadsDir, file);
+
+					if (fs.statSync(filePath).isFile()) {
+						fs.unlinkSync(filePath);
+						console.log(`🗑️ Removido: ${file}`);
+					}
+				}
 			}
 		}
 	}
