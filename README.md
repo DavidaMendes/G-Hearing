@@ -6,11 +6,23 @@ Sistema de reconhecimento de música em vídeos usando IA para identificar times
 
 ### Pré-requisitos
 - [Docker](https://www.docker.com/get-started) instalado
-- [Node.js](https://nodejs.org/) (versão 18 ou superior)
+- [Node.js](https://nodejs.org/) **versão 20** (obrigatório para Prisma 6.x)
 - [npm](https://www.npmjs.com/) ou [pnpm](https://pnpm.io/)
 - [FFmpeg](https://ffmpeg.org/download.html) instalado (para processamento de vídeo/áudio)
 - [Python 3](https://www.python.org/downloads/) (versão 3.8 ou superior)
 - Bibliotecas Python: `numpy` e `pydub`
+
+### ⚠️ Importante: Versão do Node.js
+Este projeto **requer Node.js 20** devido à compatibilidade com Prisma 6.x. Se você estiver usando uma versão diferente:
+
+```bash
+# Instalar Node.js 20 usando nvm (recomendado)
+nvm install 20
+nvm use 20
+
+# Verificar a versão
+node --version  # Deve mostrar v20.x.x
+```
 
 ### 1. Clone o repositório
 ```bash
@@ -239,6 +251,21 @@ G-Hearing/
 - **Processamento**: Extração automática de áudio + detecção de música
 
 ## 🚨 Solução de problemas
+
+### Erro de versão do Node.js
+```bash
+# Se aparecer erro de compatibilidade com Prisma
+# Verifique sua versão do Node.js
+node --version
+
+# Se não for v20.x.x, instale Node.js 20
+nvm install 20
+nvm use 20
+
+# Reinstale as dependências
+rm -rf node_modules package-lock.json
+npm install
+```
 
 ### Erro de conexão com banco
 ```bash

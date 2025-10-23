@@ -4,6 +4,7 @@ import { VideoService } from './video.js';
 import { FFmpegService } from './ffmpeg.js';
 import { AudioCutterService } from './audio-cutter.js';
 import { AuddService } from './audd.js';
+import { DatabaseService } from './database.js';
 
 export {
 	UserService,
@@ -11,5 +12,6 @@ export {
 	VideoService,
 	FFmpegService,
 	AudioCutterService,
-	AuddService
+	AuddService,
+	DatabaseService
 };

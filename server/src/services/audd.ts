@@ -1,111 +1,160 @@
+import FormData from 'form-data';
+import fs from 'fs';
+import axios from 'axios';
+
 export interface AuddResponse {
 	status: 'success' | 'error';
 	result?: {
-		title: string;
 		artist: string;
+		title: string;
 		album?: string;
 		release_date?: string;
 		label?: string;
-		timecode: string;
+		timecode?: string;
 		song_link?: string;
-	};
-	error?: string;
+		isrc?: string;
+		apple_music?: any;
+		spotify?: any;
+	} | undefined;
+	error?: string | undefined;
+	rawResponse?: any;
 }
 
 export class AuddService {
-	async recognizeMusic(audioFilePath: string): Promise<AuddResponse> {
-		console.log(`🎵 Enviando para audd.io: ${audioFilePath}`);
+	private apiToken: string;
+	private baseUrl: string = 'https://api.audd.io/';
 
-		await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000));
+	constructor() {
+		this.apiToken = process.env.AUDD_IO_TOKEN || '';
 
-		const shouldRecognize = Math.random() < 0.7;
-
-		if (shouldRecognize) {
-			const mockSongs = [
-				{
-					title: 'Bohemian Rhapsody',
-					artist: 'Queen',
-					album: 'A Night at the Opera',
-					release_date: '1975',
-					label: 'EMI',
-					song_link: 'https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv'
-				},
-				{
-					title: 'Hotel California',
-					artist: 'Eagles',
-					album: 'Hotel California',
-					release_date: '1976',
-					label: 'Asylum Records',
-					song_link: 'https://open.spotify.com/track/40riOy7x9W7GXzGZMy1y5p'
-				},
-				{
-					title: 'Imagine',
-					artist: 'John Lennon',
-					album: 'Imagine',
-					release_date: '1971',
-					label: 'Apple Records',
-					song_link: 'https://open.spotify.com/track/7pKfPomrE7XiGhQjbgwI7E'
-				},
-				{
-					title: "Sweet Child O' Mine",
-					artist: "Guns N' Roses",
-					album: 'Appetite for Destruction',
-					release_date: '1987',
-					label: 'Geffen Records',
-					song_link: 'https://open.spotify.com/track/7snQQk1zcKl8gZ92AnueZW'
-				},
-				{
-					title: 'Stairway to Heaven',
-					artist: 'Led Zeppelin',
-					album: 'Led Zeppelin IV',
-					release_date: '1971',
-					label: 'Atlantic Records',
-					song_link: 'https://open.spotify.com/track/5CQ30WqJwcep0pYcV4AMNc'
-				}
-			];
-
-			const randomSong = mockSongs[Math.floor(Math.random() * mockSongs.length)];
-
-			return {
-				status: 'success',
-				result: {
-					title: randomSong?.title ?? 'Unknown',
-					artist: randomSong?.artist ?? 'Unknown',
-					album: randomSong?.album ?? 'Unknown',
-					release_date: randomSong?.release_date ?? 'Unknown',
-					label: randomSong?.label ?? 'Unknown',
-					song_link: randomSong?.song_link ?? 'Unknown',
-					timecode: this.generateRandomTimecode()
-				}
-			};
-		} else {
-			return {
-				status: 'error',
-				error: 'Música não reconhecida'
-			};
-		}
+		console.log(`🎵 AuddService inicializado com token: ${this.apiToken.substring(0, 4)}...`);
 	}
 
-	private generateRandomTimecode(): string {
-		const minutes = Math.floor(Math.random() * 5);
-		const seconds = Math.floor(Math.random() * 60);
-		return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+	async recognizeMusic(audioFilePath: string): Promise<AuddResponse> {
+		try {
+			console.log(`🎵 Enviando áudio para audd.io: ${audioFilePath}`);
+
+			if (!fs.existsSync(audioFilePath)) {
+				throw new Error(`Arquivo de áudio não encontrado: ${audioFilePath}`);
+			}
+
+			const formData = new FormData();
+			formData.append('file', fs.createReadStream(audioFilePath));
+			formData.append('return', 'apple_music,spotify');
+			formData.append('api_token', this.apiToken);
+
+			const response = await axios.post(this.baseUrl, formData, {
+				headers: {
+					...formData.getHeaders(),
+				},
+				timeout: 30000, // 30 sec
+			});
+
+			const hasResult = !!response.data.result;
+
+			console.log(`✅ Resposta recebida do audd.io:`, {
+				status: response.data.status,
+				hasResult: hasResult,
+				artist: response.data.result?.artist || 'N/A',
+				title: response.data.result?.title || 'N/A',
+				isrc: this.extractISRC(response.data.result)
+			});
+
+			if (!hasResult) {
+				console.log(`❌ Nenhuma música reconhecida pelo audd.io`);
+				return {
+					status: 'error',
+					result: undefined,
+					error: 'Nenhuma música reconhecida',
+					rawResponse: response.data
+				};
+			}
+
+			return {
+				status: response.data.status,
+				result: this.extractMusicInfo(response.data.result),
+				rawResponse: response.data
+			};
+
+		} catch (error) {
+			console.error('❌ Erro ao reconhecer áudio com audd.io:', error);
+
+			if (axios.isAxiosError(error)) {
+				console.error('Detalhes do erro HTTP:', {
+					status: error.response?.status,
+					statusText: error.response?.statusText,
+					data: error.response?.data
+				});
+			}
+
+			return {
+				status: 'error',
+				result: undefined,
+				error: error instanceof Error ? error.message : 'Erro desconhecido'
+			};
+		}
 	}
 
 	async recognizeAllSegments(audioFiles: string[]): Promise<AuddResponse[]> {
+		console.log(`🎵 Reconhecendo ${audioFiles.length} segmentos de áudio...`);
+
 		const results: AuddResponse[] = [];
 
-		console.log(`🎵 Processando ${audioFiles.length} segmentos com audd.io...`);
-
 		for (let i = 0; i < audioFiles.length; i++) {
-			console.log(`   Processando segmento ${i + 1}/${audioFiles.length}...`);
 			const audioFile = audioFiles[i];
-			if (audioFile) {
+
+			if (!audioFile) {
+				console.error(`❌ Arquivo de áudio não encontrado no índice ${i + 1}`);
+				results.push({
+					status: 'error',
+					result: undefined,
+					error: 'Arquivo de áudio não encontrado'
+				});
+
+				continue;
+			}
+
+			try {
 				const result = await this.recognizeMusic(audioFile);
 				results.push(result);
+
+				if (i < audioFiles.length - 1) {
+					await new Promise(resolve => setTimeout(resolve, 1000));
+				}
+			} catch (error) {
+				console.error(`❌ Erro ao processar segmento ${i + 1}:`, error);
+				results.push({
+					status: 'error',
+					result: undefined,
+					error: error instanceof Error ? error.message : 'Erro desconhecido'
+				});
 			}
 		}
 
+		const successCount = results.filter(r => r.status === 'success').length;
+		console.log(`✅ Reconhecimento concluído: ${successCount}/${audioFiles.length} sucessos`);
+
 		return results;
+	}
+
+	private extractMusicInfo(auddResult: any): any {
+		return {
+			artist: auddResult.artist,
+			title: auddResult.title,
+			album: auddResult.album,
+			release_date: auddResult.release_date,
+			label: auddResult.label,
+			timecode: auddResult.timecode,
+			song_link: auddResult.song_link,
+			isrc: this.extractISRC(auddResult),
+			apple_music: auddResult.apple_music,
+			spotify: auddResult.spotify
+		};
+	}
+
+	private extractISRC(auddResult: any): string | undefined {
+		return auddResult?.apple_music?.isrc ||
+			   auddResult?.spotify?.external_ids?.isrc ||
+			   undefined;
 	}
 }

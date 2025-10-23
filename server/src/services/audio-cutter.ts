@@ -39,7 +39,6 @@ export class AudioCutterService {
 
 		console.log(`✂️ Recortando áudio: ${startTime} (${startSeconds}s) - ${endTime} (${endSeconds}s)`);
 
-		// Ir direto para re-encoding (WAV -> MP3 sempre precisa re-encodar)
 		this.cutWithReencoding(audioPath, startSeconds, endSeconds, outputPath)
 			.then(resolve)
 			.catch(reject);

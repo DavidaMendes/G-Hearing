@@ -10,7 +10,6 @@ const videoService = new VideoService();
 export default class VideoController {
 	async processVideo(req: AuthRequest, res: Response) {
 		try {
-			// O arquivo vem do multer no req.file
 			if (!req.file) {
 				return res.status(400).json({
 					error: 'Arquivo não encontrado',
@@ -18,7 +17,6 @@ export default class VideoController {
 				});
 			}
 
-			// O userId vem do middleware de autenticação
 			if (!req.userId) {
 				return res.status(401).json({
 					error: 'Usuário não autenticado',
