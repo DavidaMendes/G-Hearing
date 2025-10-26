@@ -28,10 +28,6 @@ export default class VideoController {
 			const videoPath = req.file.path;
 			const userId = req.userId;
 
-			console.log(`📁 Arquivo recebido: ${videoPath}`);
-			console.log(`📝 Título: ${title}`);
-			console.log(`👤 User ID: ${userId}`);
-
 			const result = await videoService.processVideo(videoPath, title, userId);
 
 			if (result.success) {

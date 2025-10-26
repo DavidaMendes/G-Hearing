@@ -22,7 +22,7 @@ export class VideoService {
 	}
 
 	async processVideo(videoPath: string, title: string, userId: number) {
-		let audioPath: string | null = null;
+		let audioPaths: string[] | null = null;
 		let cutFiles: string[] = [];
 		let videoRecord: any = null;
 
@@ -42,34 +42,19 @@ export class VideoService {
 				userId
 			});
 
-			audioPath = await this.ffmpegService.extractAudioFromMXF(videoPath);
-			console.log(`🎵 Áudio extraído: ${audioPath}`);
+			audioPaths = await this.ffmpegService.extractAudioFromMXF(videoPath);
+			console.log(`🎵 Áudio(s) extraído(s): ${audioPaths.join(', ')}`);
 
 			console.log('🔍 Iniciando detecção de segmentos de música...');
-			const segments = await this.musicDetectionService.detectSegments(audioPath);
-			console.log(`✅ Segmentos detectados: ${segments.length}`);
+			let segments: string[][] = [];
 
-			if (segments.length === 0) {
-				await this.databaseService.updateVideoStatus(videoRecord.id, 'completed', 0);
-				await this.databaseService.updateVideoAudioPath(videoRecord.id, audioPath);
-				return {
-					success: true,
-					message: 'Nenhuma música detectada no vídeo',
-					segments: [],
-					recognizedSongs: [],
-					segmentsCount: 0,
-					songsCount: 0,
-					videoPath,
-					videoId: videoRecord.id
-				};
-			}
-
-			segments.forEach((segment, index) => {
-				console.log(`   ${index + 1}. ${segment[0]} - ${segment[1]}`);
-			});
-
-			cutFiles = await this.audioCutterService.cutAllSegments(audioPath, segments);
-			console.log(`✂️ ${cutFiles.length} segmentos recortados`);
+			for (const audioPath of audioPaths) {
+				segments = await this.musicDetectionService.detectSegments(audioPath);
+				console.log(`✅ Segmentos detectados: ${segments.length}`);
+				segments.forEach((s, i) => console.log(`   ${i + 1}. ${s[0]} - ${s[1]}`));
+			  
+				const outFiles = await this.audioCutterService.cutAllSegments(audioPath, segments);
+			  }
 
 			const recognitionResults = await this.auddService.recognizeAllSegments(cutFiles);
 
@@ -115,9 +100,10 @@ export class VideoService {
 			}
 
 			await this.databaseService.updateVideoStatus(videoRecord.id, 'completed', unrecognizedCount);
-			await this.databaseService.updateVideoAudioPath(videoRecord.id, audioPath);
-
-			console.log(`💾 Arquivo de áudio mantido: ${audioPath}`);
+			for (const audioPath of audioPaths) {
+				await this.databaseService.updateVideoAudioPath(videoRecord.id, audioPath);
+				console.log(`💾 Arquivo de áudio mantido: ${audioPath}`);
+			}
 
 			return {
 				success: true,
@@ -155,7 +141,7 @@ export class VideoService {
 				segments: [],
 				recognizedSongs: [],
 				videoPath,
-				audioPath,
+				audioPaths: audioPaths?.join(', ') || '',
 				videoId: videoRecord?.id
 			};
 		} finally {
