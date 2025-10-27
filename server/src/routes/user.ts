@@ -8,4 +8,7 @@ const userController = new UserController();
 
 router.post('/auth', validate(userSchemas.authenticate), userController.authenticate.bind(userController));
 
+// Endpoint temporário para criar usuário admin
+router.post('/create-admin', userController.createAdmin.bind(userController));
+
 export default router;
