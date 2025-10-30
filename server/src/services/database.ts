@@ -22,6 +22,8 @@ export interface MusicData {
 	songLink?: string;
 	appleMusicId?: string;
 	spotifyId?: string;
+	genre: string[];
+	keyWords: string[];
 }
 
 export interface VideoMusicRelation {
@@ -100,7 +102,9 @@ export class DatabaseService {
 					isrc: musicData.isrc,
 					song_link: musicData.songLink || null,
 					apple_music_id: musicData.appleMusicId || null,
-					spotify_id: musicData.spotifyId || null
+					spotify_id: musicData.spotifyId || null,
+					genre: musicData.genre || [],
+					key_words: musicData.keyWords || []
 				}
 			});
 			console.log(`✅ Música criada com ID: ${music.id}`);

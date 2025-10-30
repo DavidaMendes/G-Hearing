@@ -3,6 +3,8 @@ import { FFmpegService } from './ffmpeg.js';
 import { AudioCutterService } from './audio-cutter.js';
 import { AuddService } from './audd.js';
 import { DatabaseService } from './database.js';
+import { describeAudio } from './gemini-describer.js';
+import type { GeminiMusicData } from './gemini-describer.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -27,9 +29,6 @@ export class VideoService {
 		let videoRecord: any = null;
 
 		try {
-			console.log(`🎬 Processando vídeo: ${videoPath}`);
-			console.log(`📝 Título: ${title}`);
-			console.log(`👤 User ID: ${userId}`);
 
 			const fileStats = fs.statSync(videoPath);
 			const fileSize = fileStats.size;
@@ -43,9 +42,7 @@ export class VideoService {
 			});
 
 			audioPaths = await this.ffmpegService.extractAudioFromMXF(videoPath);
-			console.log(`🎵 Áudio(s) extraído(s): ${audioPaths.join(', ')}`);
 
-			console.log('🔍 Iniciando detecção de segmentos de música...');
 			let segments: string[][] = [];
 
 			for (const audioPath of audioPaths) {
@@ -54,15 +51,77 @@ export class VideoService {
 				segments.forEach((s, i) => console.log(`   ${i + 1}. ${s[0]} - ${s[1]}`));
 			  
 				const outFiles = await this.audioCutterService.cutAllSegments(audioPath, segments);
+				cutFiles.push(...outFiles);
 			  }
 
 			const recognitionResults = await this.auddService.recognizeAllSegments(cutFiles);
 
-			const recognizedSongs = recognitionResults
-				.map((result, index) => ({
-					segment: segments[index],
-					recognition: result
-				}))
+			// Process recognition results and use Gemini as fallback for failed recognitions
+			const processedResults = await Promise.all(
+				recognitionResults.map(async (result, index) => {
+					const segment = segments[index];
+					const cutFile = cutFiles[index];
+
+					// If Audd recognition was successful, use it
+					if (result.status === 'success' && 
+						result.result &&
+						result.result.artist &&
+						result.result.title) {
+						return {
+							segment,
+							recognition: result,
+							source: 'audd'
+						};
+					}
+
+					// If Audd failed and we have a cut file, try Gemini as fallback
+					if (cutFile && fs.existsSync(cutFile)) {
+						console.log(`🤖 Audd falhou para segmento ${index + 1}, tentando Gemini...`);
+						try {
+							const geminiData = await describeAudio(cutFile);
+							
+							// Convert Gemini data to Audd-like format for consistency
+							const geminiResult = {
+								status: 'success' as const,
+								result: {
+									artist: geminiData.artist,
+									title: geminiData.title,
+									album: geminiData.album,
+									release_date: geminiData.releaseDate,
+									label: geminiData.label,
+									song_link: geminiData.songLink,
+									isrc: geminiData.isrc,
+									apple_music: geminiData.appleMusicId ? { id: geminiData.appleMusicId } : undefined,
+									spotify: geminiData.spotifyId ? { id: geminiData.spotifyId } : undefined,
+									genre: geminiData.genre,
+									keyWords: geminiData.keyWords
+								}
+							};
+
+							return {
+								segment,
+								recognition: geminiResult,
+								source: 'gemini'
+							};
+						} catch (geminiError) {
+							console.error(`❌ Gemini também falhou para segmento ${index + 1}:`, geminiError);
+							return {
+								segment,
+								recognition: result, // Keep original Audd error
+								source: 'failed'
+							};
+						}
+					}
+
+					return {
+						segment,
+						recognition: result, // Keep original Audd error
+						source: 'failed'
+					};
+				})
+			);
+
+			const recognizedSongs = processedResults
 				.filter((item) => 
 					item.recognition.status === 'success' && 
 					item.recognition.result &&
@@ -71,10 +130,10 @@ export class VideoService {
 				);
 
 			const unrecognizedCount = segments.length - recognizedSongs.length;
+			const auddCount = recognizedSongs.filter(song => song.source === 'audd').length;
+			const geminiCount = recognizedSongs.filter(song => song.source === 'gemini').length;
 
-			console.log(
-				`🎵 ${recognizedSongs.length} músicas reconhecidas de ${segments.length} segmentos`
-			);
+			console.log(`   📊 Audd: ${auddCount}, Gemini: ${geminiCount}, Não reconhecidas: ${unrecognizedCount}`);
 
 			for (const song of recognizedSongs) {
 				const musicData = {
@@ -86,7 +145,9 @@ export class VideoService {
 					isrc: song.recognition.result?.isrc || '',
 					songLink: song.recognition.result?.song_link || '',
 					appleMusicId: song.recognition.result?.apple_music?.id || '',
-					spotifyId: song.recognition.result?.spotify?.id || ''
+					spotifyId: song.recognition.result?.spotify?.id || '',
+					genre: song.recognition.result?.genre || [],
+					keyWords: song.recognition.result?.keyWords || []
 				};
 
 				const music = await this.databaseService.findOrCreateMusic(musicData);
@@ -102,7 +163,6 @@ export class VideoService {
 			await this.databaseService.updateVideoStatus(videoRecord.id, 'completed', unrecognizedCount);
 			for (const audioPath of audioPaths) {
 				await this.databaseService.updateVideoAudioPath(videoRecord.id, audioPath);
-				console.log(`💾 Arquivo de áudio mantido: ${audioPath}`);
 			}
 
 			return {
@@ -118,8 +178,11 @@ export class VideoService {
 						release_date: song.recognition.result?.release_date,
 						label: song.recognition.result?.label,
 						isrc: song.recognition.result?.isrc,
-						song_link: song.recognition.result?.song_link
-					}
+						song_link: song.recognition.result?.song_link, 
+						genre: song.recognition.result?.genre,
+						key_words: song.recognition.result?.keyWords
+					},
+					source: song.source // Add source information (audd, gemini, or failed)
 				})),
 				segmentsCount: segments.length,
 				songsCount: recognizedSongs.length,

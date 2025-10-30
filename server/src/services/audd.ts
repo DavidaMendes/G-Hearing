@@ -15,6 +15,8 @@ export interface AuddResponse {
 		isrc?: string;
 		apple_music?: any;
 		spotify?: any;
+		genre?: string[];
+		keyWords?: string[];
 	} | undefined;
 	error?: string | undefined;
 	rawResponse?: any;
@@ -26,8 +28,6 @@ export class AuddService {
 
 	constructor() {
 		this.apiToken = process.env.AUDD_IO_TOKEN || '';
-
-		console.log(`🎵 AuddService inicializado com token: ${this.apiToken.substring(0, 4)}...`);
 	}
 
 	async recognizeMusic(audioFilePath: string): Promise<AuddResponse> {
@@ -96,8 +96,6 @@ export class AuddService {
 	}
 
 	async recognizeAllSegments(audioFiles: string[]): Promise<AuddResponse[]> {
-		console.log(`🎵 Reconhecendo ${audioFiles.length} segmentos de áudio...`);
-
 		const results: AuddResponse[] = [];
 
 		for (let i = 0; i < audioFiles.length; i++) {
@@ -148,7 +146,9 @@ export class AuddService {
 			song_link: auddResult.song_link,
 			isrc: this.extractISRC(auddResult),
 			apple_music: auddResult.apple_music,
-			spotify: auddResult.spotify
+			spotify: auddResult.spotify, 
+			genre: [],
+			keyWords: []
 		};
 	}
 
