@@ -57,6 +57,8 @@ model Music {
   spotify_id      String?
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
+  genre           String[]
+  key_words       String[]
 
   // Relacionamentos
   video_musics    VideoMusic[]
