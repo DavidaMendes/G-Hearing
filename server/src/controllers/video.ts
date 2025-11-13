@@ -53,4 +53,56 @@ export default class VideoController {
 			});
 		}
 	}
+
+	async listVideos(req: AuthRequest, res: Response) {
+		try {
+			console.log('📋 [GET /videos] Requisição recebida para listar vídeos');
+			
+			// Se o usuário estiver autenticado, pode filtrar apenas seus vídeos
+			// Se não estiver autenticado, lista todos (ou pode retornar erro)
+			const userId = req.userId;
+
+			if (userId) {
+				console.log(`👤 Usuário autenticado (ID: ${userId}) - Filtrando vídeos do usuário`);
+			} else {
+				console.log('⚠️ Nenhum usuário autenticado - Listando todos os vídeos');
+			}
+
+			const result = await videoService.listVideos(userId);
+
+			if (result.success) {
+				console.log(`✅ [GET /videos] Sucesso! ${result.total} vídeo(s) encontrado(s)`);
+				
+				if (result.total > 0) {
+					console.log('📹 Detalhes dos vídeos:');
+					result.videos.forEach((video, index) => {
+						console.log(`   ${index + 1}. ID: ${video.id} | Título: "${video.title}"`);
+						console.log(`      Status: ${video.processingStatus} | Músicas: ${video.musics.length}`);
+						console.log(`      Upload: ${new Date(video.uploadDate).toLocaleString('pt-BR')}`);
+					});
+				} else {
+					console.log('ℹ️ Nenhum vídeo encontrado no banco de dados');
+				}
+
+				res.json({
+					message: `${result.total} vídeo(s) encontrado(s)`,
+					videos: result.videos,
+					total: result.total
+				});
+			} else {
+				console.error(`❌ [GET /videos] Erro ao listar vídeos: ${result.message}`);
+				res.status(500).json({
+					error: 'Erro ao listar vídeos',
+					message: result.message
+				});
+			}
+		} catch (error) {
+			console.error('❌ [GET /videos] Erro no controller de listagem de vídeos:', error);
+			console.error('   Stack trace:', error instanceof Error ? error.stack : 'N/A');
+			res.status(500).json({
+				error: 'Erro interno do servidor',
+				message: 'Não foi possível listar os vídeos'
+			});
+		}
+	}
 }

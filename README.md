@@ -192,6 +192,12 @@ curl -X POST http://localhost:3333/api/videos/process \
   -F "title=Meu Vídeo Teste"
 ```
 
+### Listar todos os vídeos
+```bash
+curl -X GET http://localhost:3333/api/videos \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
 ### Health check
 ```bash
 curl http://localhost:3333/health

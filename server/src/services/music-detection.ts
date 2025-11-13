@@ -8,7 +8,6 @@ export class MusicDetectionService {
 				const serverRoot = process.cwd();
 				const pythonScript = path.join(serverRoot, 'music-detector-broadcast.py');
 
-				// O interpretador Python prioriza o venv do projeto
 				const venvPythonWin = path.join(serverRoot, 'venv', 'Scripts', 'python.exe');
 				const venvPythonUnix = path.join(serverRoot, 'venv', 'bin', 'python3');
 				const pythonExec = fs.existsSync(venvPythonWin)

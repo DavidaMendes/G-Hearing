@@ -161,4 +161,66 @@ export class VideoService {
 			}
 		}
 	}
+
+	async listVideos(userId?: number) {
+		try {
+			console.log(`🔍 [VideoService] Buscando vídeos${userId ? ` para usuário ID: ${userId}` : ' (todos os usuários)'}`);
+			
+			const videos = await this.databaseService.getAllVideos(userId);
+			
+			console.log(`📊 [VideoService] ${videos.length} vídeo(s) encontrado(s) no banco de dados`);
+			
+			return {
+				success: true,
+				videos: videos.map(video => ({
+					id: video.id,
+					title: video.title,
+					filePath: video.file_path,
+					audioPath: video.audio_path,
+					duration: video.duration,
+					fileSize: video.file_size ? Number(video.file_size) : null,
+					uploadDate: video.upload_date,
+					processingStatus: video.processing_status,
+					unrecognizedCount: video.unrecognized_count,
+					createdAt: video.created_at,
+					updatedAt: video.updated_at,
+					user: {
+						id: video.user.id,
+						name: video.user.name,
+						email: video.user.email
+					},
+					musics: video.video_musics.map(vm => ({
+						id: vm.id,
+						startTime: vm.start_time,
+						endTime: vm.end_time,
+						music: {
+							id: vm.music.id,
+							title: vm.music.title,
+							artist: vm.music.artist,
+							album: vm.music.album,
+							releaseDate: vm.music.release_date,
+							label: vm.music.label,
+							isrc: vm.music.isrc,
+							songLink: vm.music.song_link,
+							appleMusicId: vm.music.apple_music_id,
+							spotifyId: vm.music.spotify_id
+						}
+					}))
+				})),
+				total: videos.length
+			};
+		} catch (error) {
+			console.error('❌ [VideoService] Erro ao listar vídeos:', error);
+			console.error('   Detalhes:', error instanceof Error ? error.message : 'Erro desconhecido');
+			console.error('   Stack:', error instanceof Error ? error.stack : 'N/A');
+			return {
+				success: false,
+				message: `Erro ao listar vídeos: ${
+					error instanceof Error ? error.message : 'Erro desconhecido'
+				}`,
+				videos: [],
+				total: 0
+			};
+		}
+	}
 }
