@@ -1,6 +1,5 @@
 # Dependências
 node_modules/
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
@@ -19,8 +18,7 @@ __pycache__/
 *.so
 .Python
 *.egg-info/
-dist/
-build/
+
 
 # Prisma (arquivos gerados)
 /src/generated/
