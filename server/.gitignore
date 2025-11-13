@@ -1,4 +1,64 @@
-node_modules
-# Keep environment variables out of version control
+# Dependências
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Variáveis de ambiente
 .env
-/src/generated/prisma
+.env.local
+.env.*.local
+
+# Python - Ambiente Virtual
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Prisma (arquivos gerados)
+/src/generated/
+*.prisma.bak
+
+# Uploads e arquivos temporários
+uploads/
+*.mxf
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.mov
+temp/
+tmp/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build e compilação TypeScript
+dist/
+build/
+*.tsbuildinfo
+.cache/
+
+# IDE e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
