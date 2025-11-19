@@ -45,28 +45,33 @@ export class VideoService {
 			audioPaths = await this.ffmpegService.extractAudioFromMXF(videoPath);
 			console.log(`🎵 Áudio(s) extraído(s): ${audioPaths.join(', ')}`);
 
-			console.log('🔍 Iniciando detecção de segmentos de música...');
-			let segments: string[][] = [];
+		console.log('🔍 Iniciando detecção de segmentos de música...');
+		let segments: string[][] = [];
 
-			for (const audioPath of audioPaths) {
-				segments = await this.musicDetectionService.detectSegments(audioPath);
-				console.log(`✅ Segmentos detectados: ${segments.length}`);
-				segments.forEach((s, i) => console.log(`   ${i + 1}. ${s[0]} - ${s[1]}`));
-			  
-				const outFiles = await this.audioCutterService.cutAllSegments(audioPath, segments);
-			  }
+		for (const audioPath of audioPaths) {
+			const audioSegments = await this.musicDetectionService.detectSegments(audioPath);
+			console.log(`✅ Segmentos detectados: ${audioSegments.length}`);
+			audioSegments.forEach((s, i) => console.log(`   ${i + 1}. ${s[0]} - ${s[1]}`));
+		  
+			const outFiles = await this.audioCutterService.cutAllSegments(audioPath, audioSegments);
+			
+			// Acumula os segmentos e arquivos cortados de todos os áudios
+			segments = segments.concat(audioSegments);
+			cutFiles = cutFiles.concat(outFiles);
+		}
 
-			const recognitionResults = await this.auddService.recognizeAllSegments(cutFiles);
+		const recognitionResults = await this.auddService.recognizeAllSegments(cutFiles);
 
 			const recognizedSongs = recognitionResults
 				.map((result, index) => ({
 					segment: segments[index],
-					recognition: result
+					recognition: result,
+					audioSegmentPath: cutFiles[index] // Mapeia o arquivo cortado correspondente
 				}))
 				.filter((item) => 
 					item.recognition.status === 'success' && 
-					item.recognition.result &&
-					item.recognition.result.artist &&
+					item.recognition.result && 
+					item.recognition.result.artist && 
 					item.recognition.result.title
 				);
 
@@ -95,7 +100,8 @@ export class VideoService {
 					videoId: videoRecord.id,
 					musicId: music.id,
 					startTime: song.segment?.[0] || '',
-					endTime: song.segment?.[1] || ''
+					endTime: song.segment?.[1] || '',
+					audioSegmentPath: song.audioSegmentPath
 				});
 			}
 
@@ -145,18 +151,13 @@ export class VideoService {
 				videoId: videoRecord?.id
 			};
 		} finally {
-			const uploadsDir = path.dirname(videoPath);
-
-			if (fs.existsSync(uploadsDir)) {
-				const files = fs.readdirSync(uploadsDir);
-
-				for (const file of files) {
-					const filePath = path.join(uploadsDir, file);
-
-					if (fs.statSync(filePath).isFile()) {
-						fs.unlinkSync(filePath);
-						console.log(`🗑️ Removido: ${file}`);
-					}
+			// Remove apenas o arquivo de vídeo original, mantendo os áudios extraídos e cortados
+			if (videoPath && fs.existsSync(videoPath)) {
+				try {
+					fs.unlinkSync(videoPath);
+					console.log(`🗑️ Arquivo de vídeo removido: ${videoPath}`);
+				} catch (error) {
+					console.error(`⚠️ Erro ao remover arquivo de vídeo: ${error}`);
 				}
 			}
 		}
@@ -193,6 +194,7 @@ export class VideoService {
 						id: vm.id,
 						startTime: vm.start_time,
 						endTime: vm.end_time,
+						audioSegmentPath: vm.audio_segment_path,
 						music: {
 							id: vm.music.id,
 							title: vm.music.title,
@@ -216,6 +218,52 @@ export class VideoService {
 			return {
 				success: false,
 				message: `Erro ao listar vídeos: ${
+					error instanceof Error ? error.message : 'Erro desconhecido'
+				}`,
+				videos: [],
+				total: 0
+			};
+		}
+	}
+
+	async listVideosSummary(userId?: number) {
+		try {
+			console.log(`🔍 [VideoService] Buscando resumo de vídeos${userId ? ` para usuário ID: ${userId}` : ' (todos os usuários)'}`);
+			
+			const videos = await this.databaseService.getAllVideos(userId);
+			
+			console.log(`📊 [VideoService] ${videos.length} vídeo(s) encontrado(s) no banco de dados`);
+			
+			return {
+				success: true,
+				videos: videos.map(video => ({
+					id: video.id,
+					title: video.title,
+					filePath: video.file_path,
+					audioPath: video.audio_path,
+					duration: video.duration,
+					fileSize: video.file_size ? Number(video.file_size) : null,
+					uploadDate: video.upload_date,
+					processingStatus: video.processing_status,
+					unrecognizedCount: video.unrecognized_count,
+					createdAt: video.created_at,
+					updatedAt: video.updated_at,
+					user: {
+						id: video.user.id,
+						name: video.user.name,
+						email: video.user.email
+					},
+					musicCount: video.video_musics.length
+				})),
+				total: videos.length
+			};
+		} catch (error) {
+			console.error('❌ [VideoService] Erro ao listar resumo de vídeos:', error);
+			console.error('   Detalhes:', error instanceof Error ? error.message : 'Erro desconhecido');
+			console.error('   Stack:', error instanceof Error ? error.stack : 'N/A');
+			return {
+				success: false,
+				message: `Erro ao listar resumo de vídeos: ${
 					error instanceof Error ? error.message : 'Erro desconhecido'
 				}`,
 				videos: [],

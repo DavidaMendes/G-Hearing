@@ -20,4 +20,10 @@ router.get(
 	videoController.listVideos.bind(videoController)
 );
 
+router.get(
+	'/summary',
+	authenticateToken,
+	videoController.listVideosSummary.bind(videoController)
+);
+
 export default router;

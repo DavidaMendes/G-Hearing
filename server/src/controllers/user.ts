@@ -40,7 +40,7 @@ export default class UserController {
 
 			// Verificar se já existe um admin
 			const existingAdmin = await prisma.user.findUnique({
-				where: { email: 'admin@ghearing.com' }
+				where: { email: 'adm@ghearing.com' }
 			});
 
 			if (existingAdmin) {
@@ -55,12 +55,12 @@ export default class UserController {
 			}
 
 			// Criar usuário admin
-			const hashedPassword = await bcrypt.default.hash('admin123', 10);
+			const hashedPassword = await bcrypt.default.hash('adm123', 10);
 			
 			const admin = await prisma.user.create({
 				data: {
 					name: 'Administrador',
-					email: 'admin@ghearing.com',
+					email: 'adm@ghearing.com',
 					password: hashedPassword,
 					is_active: true
 				}
