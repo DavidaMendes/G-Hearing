@@ -53,4 +53,44 @@ export default class VideoController {
 			});
 		}
 	}
+
+	async getAudiosByVideoId(req: AuthRequest, res: Response) {
+		try {
+			const { videoId } = req.params;
+			const result = await videoService.getAudiosByVideoId(Number(videoId));
+			res.json(result);
+		} catch (error) {
+			console.error('Erro no controller de vídeo:', error);
+		}
+	}
+
+	async exportVideo(req: AuthRequest, res: Response) {
+		try {
+			if (!req.userId) {
+				return res.status(401).json({
+					error: 'Usuário não autenticado',
+					message: 'Token de autenticação inválido'
+				});
+			}
+
+			const { videoId } = req.params;
+
+			const result = await videoService.exportVideo(Number(videoId));
+
+			if (result?.success) {
+				res.json({
+					message: result.message,
+					edlPath: result.edlPath
+				});
+			} else {
+				res.status(500).json({
+					error: 'Erro na exportação',
+					message: result?.message
+				});
+			}
+		} catch (error) {
+			console.error('Erro no controller de vídeo:', error);
+		}
+	}
+
 }

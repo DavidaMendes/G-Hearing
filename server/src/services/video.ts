@@ -7,6 +7,8 @@ import { describeAudio } from './gemini-describer.js';
 import type { GeminiMusicData } from './gemini-describer.js';
 import fs from 'fs';
 import path from 'path';
+import { generateEdlForVideo } from './edl-generator.js';
+import type { Music } from '../generated/prisma/index.js';
 
 export class VideoService {
 	private musicDetectionService: MusicDetectionService;
@@ -107,7 +109,7 @@ export class VideoService {
 							console.error(`❌ Gemini também falhou para segmento ${index + 1}:`, geminiError);
 							return {
 								segment,
-								recognition: result, // Keep original Audd error
+								recognition: result,
 								source: 'failed'
 							};
 						}
@@ -115,7 +117,7 @@ export class VideoService {
 
 					return {
 						segment,
-						recognition: result, // Keep original Audd error
+						recognition: result,
 						source: 'failed'
 					};
 				})
@@ -150,7 +152,7 @@ export class VideoService {
 					keyWords: song.recognition.result?.keyWords || []
 				};
 
-				const music = await this.databaseService.findOrCreateMusic(musicData);
+				const music = await this.databaseService.createMusic(musicData);
 
 				await this.databaseService.createVideoMusicRelation({
 					videoId: videoRecord.id,
@@ -182,7 +184,7 @@ export class VideoService {
 						genre: song.recognition.result?.genre,
 						key_words: song.recognition.result?.keyWords
 					},
-					source: song.source // Add source information (audd, gemini, or failed)
+					source: song.source
 				})),
 				segmentsCount: segments.length,
 				songsCount: recognizedSongs.length,
@@ -224,4 +226,26 @@ export class VideoService {
 			}
 		}
 	}
+
+	async getAudiosByVideoId(videoId: number): Promise<Music[]> {
+		return await this.databaseService.findMusicsByVideoId(videoId);
+	}
+
+	async exportVideo(videoId: number) {
+		try {
+			const edlPath = await generateEdlForVideo(videoId);
+			return {
+				success: true,
+				message: 'EDL gerado com sucesso',
+				edlPath: edlPath
+			};
+		} catch (error) {
+			console.error('Erro ao gerar EDL:', error);
+			return {
+				success: false,
+				message: `Erro ao gerar EDL: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+			};
+		}
+	}
 }
+	

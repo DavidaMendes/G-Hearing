@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma/index.js';
+import { PrismaClient, type Music } from '../generated/prisma/index.js';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
@@ -83,7 +83,7 @@ export class DatabaseService {
 		return video;
 	}
 
-	async findOrCreateMusic(musicData: MusicData) {
+	async createMusic(musicData: MusicData) {
 		console.log(`🎵 Buscando/criando música: ${musicData.artist} - ${musicData.title}`);
 
 		let music = await prisma.music.findUnique({
@@ -113,6 +113,22 @@ export class DatabaseService {
 		}
 
 		return music;
+	}
+
+	async findMusicsByVideoId(videoId: number): Promise<Music[]>{
+		return await prisma.music.findMany({
+			where: { video_musics: { some: { video_id: videoId } } }
+		});
+	}
+
+	async findMusicsWithTimingByVideoId(videoId: number) {
+		return await prisma.videoMusic.findMany({
+			where: { video_id: videoId },
+			include: {
+				music: true
+			},
+			orderBy: { start_time: 'asc' }
+		});
 	}
 
 	async createVideoMusicRelation(relation: VideoMusicRelation) {

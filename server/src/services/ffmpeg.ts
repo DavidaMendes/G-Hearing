@@ -38,7 +38,6 @@ export class FFmpegService {
 		const audioPath = videoPath.replace(/\.[^/.]+$/, '.wav');
 
 		console.log(`🎬 Extraindo áudio de MXF: ${videoPath}`);
-		console.log(`🎵 Para: ${audioPath}`);
 
 		const probe = await run('ffprobe', [
 			'-v', 'error',
@@ -63,7 +62,7 @@ export class FFmpegService {
 		}
 	
 		const audioStreams = streams.filter((s) => s.codec_type === 'audio');
-		const hasA4 = streams.some((s) => s.index === 4 && s.codec_type === 'audio');
+		const hasA4 = streams.some((s) => s.index === 3 && s.codec_type === 'audio');
 		const hasA5 = streams.some((s) => s.index === 5 && s.codec_type === 'audio');
 	
 		if (audioStreams.length === 0) {
@@ -96,17 +95,17 @@ export class FFmpegService {
 	  
 		// Caso 2: multistream e especificamente #0:4 e #0:5 são de áudio
 		if (hasA4 && hasA5) {
-		const out4 = path.join(outDir, this.makeOutName(videoPath, 'Stream4'));
+		const out4 = path.join(outDir, this.makeOutName(videoPath, 'Stream3'));
 		const out5 = path.join(outDir, this.makeOutName(videoPath, 'Stream5'));
-		console.log(`🎵 Extraindo streams #0:4 e #0:5 → ${out4}, ${out5}`);
+		console.log(`🎵 Extraindo streams #0:3 e #0:5 → ${out4}, ${out5}`);
 		return await extractMultiple([
-			{ map: '0:4', out: out4 },
+			{ map: '0:3', out: out4 },
 			{ map: '0:5', out: out5 },
 		]);
 		}
 	  
 		// Outros casos: inválido para o seu fluxo
-		throw new Error('MXF inválido: não é stream único nem possui as trilhas #0:4 e #0:5 de áudio.');
+		throw new Error('MXF inválido: não é stream único nem possui as trilhas #0:3 e #0:5 de áudio.');
 	}
 
 	private makeOutName(inputPath: string, suffix: string) {
