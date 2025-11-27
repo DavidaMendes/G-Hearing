@@ -6,20 +6,36 @@ const prisma = new PrismaClient();
 
 export class UserService {
 	async authenticate(email: string, password: string) {
+		console.log('🔍 Tentativa de autenticação:', { email });
+		
 		const user = await prisma.user.findUnique({
-			where: { email, is_active: true }
+			where: { email }
 		});
 
+		console.log('👤 Usuário encontrado:', user ? { id: user.id, email: user.email, is_active: user.is_active } : 'Não encontrado');
+
 		if (!user) {
+			console.log('❌ Usuário não encontrado');
 			return {
 				success: false,
 				message: 'Usuário ou senha incorretos'
 			};
 		}
 
+		if (!user.is_active) {
+			console.log('❌ Usuário inativo');
+			return {
+				success: false,
+				message: 'Usuário ou senha incorretos'
+			};
+		}
+
+		console.log('🔐 Verificando senha...');
 		const isPasswordValid = await bcrypt.compare(password, user.password);
+		console.log('🔐 Senha válida:', isPasswordValid);
 
 		if (!isPasswordValid) {
+			console.log('❌ Senha incorreta');
 			return {
 				success: false,
 				message: 'Usuário ou senha incorretos'

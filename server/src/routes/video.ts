@@ -18,6 +18,18 @@ router.post(
 	'/:videoId/export',
 	authenticateToken,
 	videoController.exportVideo.bind(videoController)
-)
+);
+
+router.get(
+	'/',
+	authenticateToken,
+	videoController.listVideos.bind(videoController)
+);
+
+router.get(
+	'/summary',
+	authenticateToken,
+	videoController.listVideosSummary.bind(videoController)
+);
 
 export default router;

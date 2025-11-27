@@ -43,6 +43,8 @@ export class AuddService {
 			formData.append('return', 'apple_music,spotify');
 			formData.append('api_token', this.apiToken);
 
+			console.log("api audd", this.baseUrl, this.apiToken)
+
 			const response = await axios.post(this.baseUrl, formData, {
 				headers: {
 					...formData.getHeaders(),

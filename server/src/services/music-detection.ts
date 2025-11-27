@@ -1,11 +1,34 @@
 import { spawn } from 'child_process';
 import path from 'path';
+import fs from 'fs';
 
 export class MusicDetectionService {
 	async detectSegments(audioPath: string): Promise<string[][]> {
 		return new Promise((resolve, reject) => {
-			const pythonScript = path.join(process.cwd(), 'music-detector-broadcast.py');
-			const python = spawn('python3', [pythonScript, audioPath, 'medium']);
+				const serverRoot = process.cwd();
+				const pythonScript = path.join(serverRoot, 'music-detector-broadcast.py');
+
+				const venvPythonWin = path.join(serverRoot, 'venv', 'Scripts', 'python.exe');
+				const venvPythonUnix = path.join(serverRoot, 'venv', 'bin', 'python3');
+				const pythonExec = fs.existsSync(venvPythonWin)
+					? venvPythonWin
+					: fs.existsSync(venvPythonUnix)
+						? venvPythonUnix
+						: process.platform === 'win32'
+							? 'python'
+							: 'python3';
+
+				const python = spawn(
+					pythonExec,
+					[pythonScript, audioPath, 'medium'],
+					{
+						env: {
+							...process.env,
+							PYTHONIOENCODING: 'utf-8',
+							PYTHONUTF8: '1'
+						}
+					}
+				);
 
 			let output = '';
 			let errorOutput = '';

@@ -9,7 +9,7 @@ Sistema de reconhecimento de música em vídeos usando IA para identificar times
 - [Node.js](https://nodejs.org/) **versão 20** (obrigatório para Prisma 6.x)
 - [npm](https://www.npmjs.com/) ou [pnpm](https://pnpm.io/)
 - [FFmpeg](https://ffmpeg.org/download.html) instalado (para processamento de vídeo/áudio)
-- [Python 3](https://www.python.org/downloads/) (versão 3.8 ou superior)
+- [Python 3](https://www.python.org/downloads/) (versão 3.8 a 3.12)
 - Bibliotecas Python: `numpy` e `pydub`
 
 ### ⚠️ Importante: Versão do Node.js
@@ -190,6 +190,12 @@ curl -X POST http://localhost:3333/api/videos/process \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -F "video=@/caminho/para/seu/video.mxf" \
   -F "title=Meu Vídeo Teste"
+```
+
+### Listar todos os vídeos
+```bash
+curl -X GET http://localhost:3333/api/videos \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
 ### Health check

@@ -31,6 +31,7 @@ export interface VideoMusicRelation {
 	musicId: number;
 	startTime: string;
 	endTime: string;
+	audioSegmentPath?: string;
 }
 
 export class DatabaseService {
@@ -139,11 +140,12 @@ export class DatabaseService {
 				video_id: relation.videoId,
 				music_id: relation.musicId,
 				start_time: relation.startTime,
-				end_time: relation.endTime
+				end_time: relation.endTime,
+				audio_segment_path: relation.audioSegmentPath || null
 			}
 		});
 
-		console.log(`✅ Relação criada com ID: ${videoMusic.id}`);
+		console.log(`✅ Relação criada com ID: ${videoMusic.id}${relation.audioSegmentPath ? ` (áudio: ${relation.audioSegmentPath})` : ''}`);
 		return videoMusic;
 	}
 

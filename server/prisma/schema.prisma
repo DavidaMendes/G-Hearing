@@ -67,16 +67,17 @@ model Music {
 }
 
 model VideoMusic {
-  id          Int      @id @default(autoincrement())
-  video_id    Int
-  music_id    Int
-  start_time  String   // Formato MM:SS
-  end_time    String   // Formato MM:SS
-  created_at  DateTime @default(now())
+  id                Int      @id @default(autoincrement())
+  video_id          Int
+  music_id          Int
+  start_time        String   // Formato MM:SS
+  end_time          String   // Formato MM:SS
+  audio_segment_path String? // Caminho do arquivo de áudio cortado deste segmento
+  created_at        DateTime @default(now())
 
   // Relacionamentos
-  video       Video    @relation(fields: [video_id], references: [id], onDelete: Cascade)
-  music       Music    @relation(fields: [music_id], references: [id], onDelete: Cascade)
+  video             Video    @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  music             Music    @relation(fields: [music_id], references: [id], onDelete: Cascade)
 
   @@unique([video_id, music_id, start_time, end_time])
   @@map("video_musics")
