@@ -32,4 +32,22 @@ router.get(
 	videoController.listVideosSummary.bind(videoController)
 );
 
+router.get(
+	'/list',
+	authenticateToken,
+	videoController.listVideosSummary.bind(videoController)
+);
+
+router.get(
+	'/:videoId/audios',
+	authenticateToken,
+	videoController.getAudiosByVideoId.bind(videoController)
+);
+
+router.delete(
+	'/:videoId',
+	authenticateToken,
+	videoController.deleteVideo.bind(videoController)
+);
+
 export default router;

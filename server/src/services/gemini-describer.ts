@@ -4,11 +4,17 @@ import {
     createPartFromUri,
   } from "@google/genai";
   
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is not set");
+  function getGeminiClient(): GoogleGenAI {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY environment variable is not set. O Gemini é usado como fallback quando o Audd falha.");
+    }
+    return new GoogleGenAI({ apiKey });
   }
-  const ai = new GoogleGenAI({ apiKey });
+
+  export function isGeminiAvailable(): boolean {
+    return !!process.env.GEMINI_API_KEY;
+  }
 
   export interface GeminiMusicData {
     title: string;
@@ -57,6 +63,8 @@ import {
   export async function describeAudio(audioPath: string): Promise<GeminiMusicData> {
     try {
       console.log(`🤖 Analisando áudio com Gemini: ${audioPath}`);
+      
+      const ai = getGeminiClient();
       
       const myfile = await ai.files.upload({
         file: audioPath,
