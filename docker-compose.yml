@@ -1,11 +1,45 @@
-version: '3'
+version: "3.9"
 
 services:
   db:
     image: bitnami/postgresql
-    ports:
-      - 5432:5432
+    container_name: ghearing_db
+    restart: always
     environment:
-      - POSTGRESQL_USERNAME=ghearing
-      - POSTGRESQL_PASSWORD=password
-      - POSTGRESQL_DATABASE=db_ghearing
+      POSTGRESQL_USERNAME: ghearing
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: db_ghearing
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/bitnami/postgresql
+
+  backend:
+    build: ./server
+    container_name: ghearing_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://ghearing:password@db:5432/db_ghearing?schema=public"
+      JWT_SECRET: "seu-jwt-secret"
+      PORT: 3333
+      REQUEST_TIMEOUT: 1800000
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./server:/app
+
+  frontend:
+    build: ./client/interface
+    container_name: ghearing_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client/interface:/app
+
+volumes:
+  postgres_data:
