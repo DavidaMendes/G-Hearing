@@ -3,7 +3,7 @@ import { FFmpegService } from './ffmpeg.js';
 import { AudioCutterService } from './audio-cutter.js';
 import { AuddService } from './audd.js';
 import { DatabaseService } from './database.js';
-import { describeAudio } from './gemini-describer.js';
+import { describeAudio, isGeminiAvailable } from './gemini-describer.js';
 import type { GeminiMusicData } from './gemini-describer.js';
 import fs from 'fs';
 import path from 'path';
@@ -82,7 +82,7 @@ export class VideoService {
 					}
 
 					// If Audd failed and we have a cut file, try Gemini as fallback
-					if (cutFile && fs.existsSync(cutFile)) {
+					if (cutFile && fs.existsSync(cutFile) && isGeminiAvailable()) {
 						console.log(`🤖 Audd falhou para segmento ${index + 1}, tentando Gemini...`);
 						try {
 							const geminiData = await describeAudio(cutFile);
@@ -167,7 +167,7 @@ export class VideoService {
 					musicId: music.id,
 					startTime: song.segment?.[0] || '',
 					endTime: song.segment?.[1] || '',
-					audioSegmentPath: song.audioSegmentPath
+					...(song.audioSegmentPath && { audioSegmentPath: song.audioSegmentPath })
 				});
 			}
 
@@ -233,6 +233,32 @@ export class VideoService {
 
 	async getAudiosByVideoId(videoId: number): Promise<Music[]> {
 		return await this.databaseService.findMusicsByVideoId(videoId);
+	}
+
+	async deleteVideo(videoId: number) {
+		try {
+			const video = await this.databaseService.getVideoWithMusics(videoId);
+			
+			if (!video) {
+				return {
+					success: false,
+					message: 'Vídeo não encontrado'
+				};
+			}
+
+			await this.databaseService.deleteVideo(videoId);
+
+			return {
+				success: true,
+				message: 'Vídeo deletado com sucesso'
+			};
+		} catch (error) {
+			console.error('❌ [VideoService] Erro ao deletar vídeo:', error);
+			return {
+				success: false,
+				message: `Erro ao deletar vídeo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+			};
+		}
 	}
 
 	async exportVideo(videoId: number) {

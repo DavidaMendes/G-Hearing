@@ -57,10 +57,72 @@ export default class VideoController {
 	async getAudiosByVideoId(req: AuthRequest, res: Response) {
 		try {
 			const { videoId } = req.params;
+			
+			if (!videoId || isNaN(Number(videoId))) {
+				return res.status(400).json({
+					error: 'ID de vídeo inválido',
+					message: 'O ID do vídeo deve ser um número válido'
+				});
+			}
+
 			const result = await videoService.getAudiosByVideoId(Number(videoId));
-			res.json(result);
+			
+			if (!result || result.length === 0) {
+				return res.status(404).json({
+					error: 'Nenhum áudio encontrado',
+					message: `Não foram encontrados áudios para o vídeo com ID ${videoId}`
+				});
+			}
+
+			res.json({
+				message: `${result.length} música(s) encontrada(s)`,
+				musics: result
+			});
 		} catch (error) {
-			console.error('Erro no controller de vídeo:', error);
+			console.error('❌ [GET /videos/:videoId/audios] Erro no controller:', error);
+			res.status(500).json({
+				error: 'Erro interno do servidor',
+				message: 'Não foi possível buscar os áudios do vídeo'
+			});
+		}
+	}
+
+	async deleteVideo(req: AuthRequest, res: Response) {
+		try {
+			if (!req.userId) {
+				return res.status(401).json({
+					error: 'Usuário não autenticado',
+					message: 'Token de autenticação inválido'
+				});
+			}
+
+			const { videoId } = req.params;
+
+			if (!videoId || isNaN(Number(videoId))) {
+				return res.status(400).json({
+					error: 'ID de vídeo inválido',
+					message: 'O ID do vídeo deve ser um número válido'
+				});
+			}
+
+			const result = await videoService.deleteVideo(Number(videoId));
+
+			if (result.success) {
+				res.json({
+					message: 'Vídeo deletado com sucesso'
+				});
+			} else {
+				res.status(404).json({
+					error: 'Vídeo não encontrado',
+					message: result.message
+				});
+			}
+		} catch (error) {
+			console.error('❌ [DELETE /videos/:videoId] Erro no controller:', error);
+			res.status(500).json({
+				error: 'Erro interno do servidor',
+				message: 'Não foi possível deletar o vídeo'
+			});
 		}
 	}
 
