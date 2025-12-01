@@ -96,7 +96,6 @@ export default function DashboardPage() {
       const apiVideos: ApiVideoSummary[] = data.videos || [];
       console.log("🎬 [DEBUG] Vídeos encontrados:", apiVideos.length);
 
-      // --- ADAPTER ---
       const mappedVideos: Video[] = apiVideos.map((apiVideo) => {
         let status: Video["status"] = "processing";
         if (apiVideo.processingStatus === "completed") status = "processed";
