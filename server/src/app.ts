@@ -1,7 +1,16 @@
 import express from 'express';
+import cors from 'cors';
 import routes from './routes/index.js';
 
 const app = express();
+
+app.use(
+	cors({
+		origin: 'http://localhost:3000',
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		allowedHeaders: ['Content-Type', 'Authorization']
+	})
+);
 
 const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT || '1800000');
 
