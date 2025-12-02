@@ -210,7 +210,8 @@ export function UploadVideoModal({
             <div className="space-y-2">
               <Label htmlFor="materialDate">Data do Material</Label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+
                 <Input
                   id="materialDate"
                   type="date"
@@ -218,9 +219,9 @@ export function UploadVideoModal({
                   onChange={(e) =>
                     handleInputChange("materialDate", e.target.value)
                   }
-                  className="pl-10"
                   required
                   disabled={isLoading}
+                  className="pl-10 block w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                 />
               </div>
             </div>
