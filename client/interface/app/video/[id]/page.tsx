@@ -8,22 +8,17 @@ import { Input } from "@/components/ui/input";
 import { MusicTrackCard } from "@/components/music-track-card";
 import { VideoInfoCard } from "@/components/video-info-card";
 import { MusicDetailsModal } from "@/components/music-details-modal";
-import { EditVideoModal } from "@/components/edit-video-modal";
-import { EditMusicModal } from "@/components/edit-music-modal";
+
 import {
   ArrowLeft,
   Search,
-  Filter,
-  Download,
   Music,
   Clock,
   Calendar,
   User,
-  Bell,
   LogOut,
-  Settings,
   Loader2,
-  FileDown, // Adicionei ícone novo
+  FileDown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,8 +29,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-
-// --- 1. Interfaces ---
 
 export interface VideoDetail {
   id: string;
@@ -505,7 +498,6 @@ export default function VideoDetailsPage() {
         open={!!selectedMusic}
         onOpenChange={(open) => !open && setSelectedMusic(null)}
       />
-
     </div>
   );
 }

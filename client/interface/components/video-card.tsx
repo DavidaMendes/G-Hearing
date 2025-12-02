@@ -13,14 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   MoreVertical,
-  Play,
   Music,
   Calendar,
-  Clock,
   Eye,
   Trash2,
   Loader2,
-  Hash,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -111,13 +108,6 @@ export function VideoCard({ video, onDeleteSuccess }: VideoCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-200"
           />
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-
-          <div className="absolute bottom-2 right-2">
-            <Badge className="bg-black/70 text-white border-0">
-              <Clock className="h-3 w-3 mr-1" />
-              {video.duration || "--:--"}
-            </Badge>
-          </div>
 
           <div className="absolute top-2 right-2">
             <DropdownMenu>

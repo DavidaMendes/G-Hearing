@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -29,7 +28,7 @@ interface MusicTrack {
   authors: string;
   isrc?: string;
   date?: string;
-  duration?: string; // Duração total da música (original)
+  duration?: string;
   startTime?: string;
   endTime?: string;
   performers?: string;

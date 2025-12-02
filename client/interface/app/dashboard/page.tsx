@@ -11,11 +11,8 @@ import { UploadVideoModal } from "@/components/upload-video-modal";
 import {
   Search,
   Plus,
-  Filter,
-  Bell,
   User,
   LogOut,
-  Settings,
   Upload,
   Play,
   Music,

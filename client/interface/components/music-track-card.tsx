@@ -1,26 +1,14 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  MoreVertical,
-  Play,
-  Clock,
-  Calendar,
-  Edit,
-  Eye,
-  Trash2,
-  Music,
-} from "lucide-react";
+import { Play, Clock, Calendar, Eye, Music } from "lucide-react";
 
-// Updated Interface
 interface MusicTrack {
   id: string;
   title: string;
