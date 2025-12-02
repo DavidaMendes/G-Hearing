@@ -106,7 +106,6 @@ export function UploadVideoModal({
       setFormData({ name: "", materialDate: "", description: "" });
       setSelectedFile(null);
 
-      alert("Vídeo enviado para processamento com sucesso!");
     } catch (error) {
       console.error(error);
       alert("Erro ao fazer upload do vídeo.");

@@ -166,10 +166,6 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <Bell className="h-4 w-4" />
-              </Button>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -182,10 +178,6 @@ export default function DashboardPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configurações
-                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem
@@ -266,10 +258,6 @@ export default function DashboardPage() {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filtros
-            </Button>
           </div>
 
           <Button
