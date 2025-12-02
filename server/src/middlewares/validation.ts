@@ -8,17 +8,14 @@ export const validate = (schema: {
 }) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			// Validar body
 			if (schema.body) {
 				req.body = await schema.body.validate(req.body, { abortEarly: false });
 			}
 
-			// Validar query
 			if (schema.query) {
 				req.query = await schema.query.validate(req.query, { abortEarly: false });
 			}
 
-			// Validar params
 			if (schema.params) {
 				req.params = await schema.params.validate(req.params, { abortEarly: false });
 			}

@@ -17,5 +17,68 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  // Relacionamentos
+  videos     Video[]
+
   @@map("users")
+}
+
+model Video {
+  id                  Int      @id @default(autoincrement())
+  title               String
+  file_path           String
+  audio_path          String?
+  duration            Int?     // Duração em segundos
+  file_size           BigInt?  // Tamanho do arquivo em bytes
+  upload_date         DateTime @default(now())
+  processing_status   String   @default("pending") // pending, processing, completed, failed
+  unrecognized_count  Int      @default(0) // Contagem de segmentos não reconhecidos
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  // Relacionamentos
+  user_id             Int
+  user                User     @relation(fields: [user_id], references: [id])
+  video_musics         VideoMusic[]
+
+  @@map("videos")
+}
+
+model Music {
+  id              Int      @id @default(autoincrement())
+  title           String
+  artist          String
+  album           String?
+  release_date    String?
+  label           String?
+  isrc            String   @unique // Código único internacional
+  song_link       String?
+  apple_music_id  String?
+  spotify_id      String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  genre           String[]
+  key_words       String[]
+
+  // Relacionamentos
+  video_musics    VideoMusic[]
+
+  @@map("musics")
+}
+
+model VideoMusic {
+  id                Int      @id @default(autoincrement())
+  video_id          Int
+  music_id          Int
+  start_time        String   // Formato MM:SS
+  end_time          String   // Formato MM:SS
+  audio_segment_path String? // Caminho do arquivo de áudio cortado deste segmento
+  created_at        DateTime @default(now())
+
+  // Relacionamentos
+  video             Video    @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  music             Music    @relation(fields: [music_id], references: [id], onDelete: Cascade)
+
+  @@unique([video_id, music_id, start_time, end_time])
+  @@map("video_musics")
 }

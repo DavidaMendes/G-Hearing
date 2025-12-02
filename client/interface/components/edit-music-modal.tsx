@@ -1,10 +1,10 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
+"use client";
+import { useState } from "react";
+import type React from "react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -12,36 +12,55 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Save, X, Calendar, Clock, Hash, Music, User, Building } from "lucide-react"
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Save,
+  X,
+  Calendar,
+  Clock,
+  Hash,
+  Music,
+  User,
+  Building,
+} from "lucide-react";
 
 interface MusicTrack {
-  id: string
-  title: string
-  album: string
-  isrc: string
-  date: string
-  duration: string
-  startTime: string
-  endTime: string
-  authors: string
-  performers: string
-  genres: string
-  label: string
-  recordCompany: string
-  bpm: number
-  keyAndMode: string
-  mood: string
+  id: string;
+  title: string;
+  album: string;
+  authors: string;
+  isrc?: string;
+  date?: string;
+  duration?: string;
+  startTime?: string;
+  endTime?: string;
+  performers?: string;
+  genres?: string;
+  label?: string;
+  recordCompany?: string;
+  bpm?: number;
+  keyAndMode?: string;
+  mood?: string;
 }
 
 interface EditMusicModalProps {
-  music: MusicTrack | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  music: MusicTrack | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProps) {
+export function EditMusicModal({
+  music,
+  open,
+  onOpenChange,
+}: EditMusicModalProps) {
   const [formData, setFormData] = useState({
     title: music?.title || "",
     album: music?.album || "",
@@ -58,49 +77,51 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
     bpm: music?.bpm || 120,
     keyAndMode: music?.keyAndMode || "",
     mood: music?.mood || "",
-  })
+  });
 
   const handleInputChange = (field: string, value: string | number) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Update music:", { id: music?.id, ...formData })
-    onOpenChange(false)
-  }
+    e.preventDefault();
+    console.log("Update music:", { id: music?.id, ...formData });
+    onOpenChange(false);
+  };
 
   const handleCancel = () => {
     if (music) {
       setFormData({
         title: music.title,
         album: music.album,
-        isrc: music.isrc,
-        date: music.date,
-        duration: music.duration,
-        startTime: music.startTime,
-        endTime: music.endTime,
+        isrc: music.isrc || "",
+        date: music.date || "",
+        duration: music.duration || "",
+        startTime: music.startTime || "",
+        endTime: music.endTime || "",
         authors: music.authors,
-        performers: music.performers,
-        genres: music.genres,
-        label: music.label,
-        recordCompany: music.recordCompany,
-        bpm: music.bpm,
-        keyAndMode: music.keyAndMode,
-        mood: music.mood,
-      })
+        performers: music.performers || "",
+        genres: music.genres || "",
+        label: music.label || "",
+        recordCompany: music.recordCompany || "",
+        bpm: music.bpm || 120,
+        keyAndMode: music.keyAndMode || "",
+        mood: music.mood || "",
+      });
     }
-    onOpenChange(false)
-  }
+    onOpenChange(false);
+  };
 
-  if (!music) return null
+  if (!music) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Música</DialogTitle>
-          <DialogDescription>Atualize as informações da música identificada</DialogDescription>
+          <DialogDescription>
+            Atualize as informações da música identificada
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -169,7 +190,9 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
                 <Input
                   id="duration"
                   value={formData.duration}
-                  onChange={(e) => handleInputChange("duration", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("duration", e.target.value)
+                  }
                   placeholder="0:00"
                   className="font-mono"
                   required
@@ -180,7 +203,9 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
                 <Input
                   id="startTime"
                   value={formData.startTime}
-                  onChange={(e) => handleInputChange("startTime", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("startTime", e.target.value)
+                  }
                   placeholder="00:00:00"
                   className="font-mono"
                   required
@@ -220,7 +245,9 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
                 <Input
                   id="performers"
                   value={formData.performers}
-                  onChange={(e) => handleInputChange("performers", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("performers", e.target.value)
+                  }
                   placeholder="Nome dos intérpretes"
                 />
               </div>
@@ -247,7 +274,9 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
                 <Input
                   id="recordCompany"
                   value={formData.recordCompany}
-                  onChange={(e) => handleInputChange("recordCompany", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("recordCompany", e.target.value)
+                  }
                   placeholder="Nome da gravadora"
                 />
               </div>
@@ -269,7 +298,9 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
               <div className="space-y-2">
                 <Label htmlFor="copyrightStatus">Status de Direitos</Label>
                 <Select
-                  onValueChange={(value) => handleInputChange("copyrightStatus", value)}
+                  onValueChange={(value) =>
+                    handleInputChange("copyrightStatus", value)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -287,7 +318,12 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
                   id="bpm"
                   type="number"
                   value={formData.bpm}
-                  onChange={(e) => handleInputChange("bpm", Number.parseInt(e.target.value) || 120)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "bpm",
+                      Number.parseInt(e.target.value) || 120
+                    )
+                  }
                   min="1"
                   max="300"
                 />
@@ -297,7 +333,9 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
                 <Input
                   id="keyAndMode"
                   value={formData.keyAndMode}
-                  onChange={(e) => handleInputChange("keyAndMode", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("keyAndMode", e.target.value)
+                  }
                   placeholder="C Major, A Minor, etc."
                 />
               </div>
@@ -318,7 +356,10 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
               <X className="h-4 w-4 mr-2" />
               Cancelar
             </Button>
-            <Button type="submit" className="bg-globo-teal-gradient hover:opacity-90">
+            <Button
+              type="submit"
+              className="bg-globo-teal-gradient hover:opacity-90"
+            >
               <Save className="h-4 w-4 mr-2" />
               Salvar Alterações
             </Button>
@@ -326,5 +367,5 @@ export function EditMusicModal({ music, open, onOpenChange }: EditMusicModalProp
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
