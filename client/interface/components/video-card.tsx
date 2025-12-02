@@ -11,16 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  MoreVertical,
-  Music,
-  Calendar,
-  Eye,
-  Trash2,
-  Loader2,
-} from "lucide-react";
+import { MoreVertical, Music, Calendar, Eye } from "lucide-react";
+
 import Link from "next/link";
 import Image from "next/image";
+import { DeleteVideoModal } from "./delete-video-modal";
 
 export interface Video {
   id: string;
@@ -78,8 +73,6 @@ export function VideoCard({ video, onDeleteSuccess }: VideoCardProps) {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Tem certeza que deseja excluir este vídeo permanentemente?"))
-      return;
     setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
@@ -100,7 +93,7 @@ export function VideoCard({ video, onDeleteSuccess }: VideoCardProps) {
   return (
     <Card className="group hover:shadow-lg transition-all duration-200 border-border/50">
       <div className="relative">
-        <div className="aspect-video relative overflow-hidden rounded-t-lg bg-muted">
+        <div className="aspect-video relative overflow-hidden rounded-t-lg bg-zinc-900">
           <Image
             src={video.thumbnail || "/placeholder.svg"}
             alt={video.name}
@@ -120,25 +113,27 @@ export function VideoCard({ video, onDeleteSuccess }: VideoCardProps) {
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+
+              <DropdownMenuContent
+                align="end"
+                className="bg-[#1E1E1E] border-zinc-800 text-white w-40"
+              >
                 <DropdownMenuItem asChild>
-                  <Link href={`/video/${video.id}`} className="cursor-pointer">
-                    <Eye className="h-4 w-4 mr-2" /> Detalhes
+                  <Link
+                    href={`/video/${video.id}`}
+                    className="cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 w-full flex items-center"
+                  >
+                    <Eye className="mr-2 h-4 w-4" />
+                    <span>Detalhes</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  className="text-destructive cursor-pointer"
-                >
-                  {isDeleting ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4 mr-2" />
-                  )}
-                  Excluir
-                </DropdownMenuItem>
+
+                <DropdownMenuSeparator className="bg-zinc-700" />
+
+                <DeleteVideoModal
+                  onConfirm={handleDelete}
+                  isDeleting={isDeleting}
+                />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
