@@ -161,6 +161,8 @@ DATABASE_URL="postgresql://ghearing:password@localhost:5432/db_ghearing?schema=p
 JWT_SECRET="seu-jwt-secret-aqui"
 PORT=3333
 REQUEST_TIMEOUT=1800000
+AUDD_IO_TOKEN=SUA CHAVE
+GEMINI_API_KEY=SUA CHAVE
 ```
 
 ### Configurações de timeout
