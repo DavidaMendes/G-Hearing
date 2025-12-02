@@ -78,13 +78,15 @@ export function MusicTrackCard({
             <div className="flex items-start justify-between gap-2">
               <div className="space-y-1">
                 <h3 className="font-semibold text-sm leading-tight">
-                  {track.title}
+                  {track.title === "Música Não identificada"
+                    ? track.isrc
+                    : track.title}
                 </h3>
                 <p className="text-xs text-muted-foreground">{track.album}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div className="flex justify-between flex-wrap gap-2 text-xs">
               <div className="space-y-1">
                 <p className="text-muted-foreground">ISRC</p>
                 <p className="font-mono">{track.isrc || "N/A"}</p>

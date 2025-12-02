@@ -124,18 +124,6 @@ export default function LoginPage() {
               {loading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              Não tem uma conta?{" "}
-              <Link
-                href="/register"
-                className="text-primary hover:text-primary/80 font-medium"
-              >
-                Cadastre-se
-              </Link>
-            </p>
-          </div>
         </CardContent>
       </Card>
     </AuthLayout>
