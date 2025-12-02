@@ -46,9 +46,6 @@ export function VideoInfoCard({ video, onEdit }: VideoInfoCardProps) {
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-lg leading-tight">{video.name}</CardTitle>
-          <Button variant="outline" size="sm" onClick={onEdit}>
-            <Edit className="h-4 w-4" />
-          </Button>
         </div>
         {getStatusBadge(video.status)}
       </CardHeader>

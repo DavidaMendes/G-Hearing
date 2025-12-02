@@ -149,15 +149,7 @@ export function MusicTrackCard({
                   <Eye className="h-4 w-4 mr-2" />
                   Ver detalhes
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Editar
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Remover
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -518,20 +518,6 @@ export default function VideoDetailsPage() {
         onOpenChange={(open) => !open && setSelectedMusic(null)}
       />
 
-      <EditVideoModal
-        video={video}
-        open={isEditVideoModalOpen}
-        onOpenChange={setIsEditVideoModalOpen}
-      />
-
-      <EditMusicModal
-        music={editingMusic}
-        open={isEditMusicModalOpen}
-        onOpenChange={(open) => {
-          setIsEditMusicModalOpen(open);
-          if (!open) setEditingMusic(null);
-        }}
-      />
     </div>
   );
 }
