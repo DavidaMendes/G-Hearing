@@ -79,7 +79,7 @@ export default class VideoController {
 				musics: result
 			});
 		} catch (error) {
-			console.error('❌ [GET /videos/:videoId/audios] Erro no controller:', error);
+			console.error('Erro no controller ao buscar áudios do vídeo:', error);
 			res.status(500).json({
 				error: 'Erro interno do servidor',
 				message: 'Não foi possível buscar os áudios do vídeo'
@@ -118,7 +118,7 @@ export default class VideoController {
 				});
 			}
 		} catch (error) {
-			console.error('❌ [DELETE /videos/:videoId] Erro no controller:', error);
+			console.error('Erro no controller ao deletar vídeo:', error);
 			res.status(500).json({
 				error: 'Erro interno do servidor',
 				message: 'Não foi possível deletar o vídeo'
@@ -157,32 +157,30 @@ export default class VideoController {
 
 	async listVideos(req: AuthRequest, res: Response) {
 		try {
-			console.log('📋 [GET /videos] Requisição recebida para listar vídeos');
+			console.log('Requisição recebida para listar vídeos');
 			
-			// Se o usuário estiver autenticado, pode filtrar apenas seus vídeos
-			// Se não estiver autenticado, lista todos (ou pode retornar erro)
 			const userId = req.userId;
 
 			if (userId) {
-				console.log(`👤 Usuário autenticado (ID: ${userId}) - Filtrando vídeos do usuário`);
+				console.log(`Usuário autenticado (ID: ${userId}) - Filtrando vídeos do usuário`);
 			} else {
-				console.log('⚠️ Nenhum usuário autenticado - Listando todos os vídeos');
+				console.log('Nenhum usuário autenticado - Listando todos os vídeos');
 			}
 
 			const result = await videoService.listVideos(userId);
 
 			if (result.success) {
-				console.log(`✅ [GET /videos] Sucesso! ${result.total} vídeo(s) encontrado(s)`);
+				console.log(`Sucesso! ${result.total} vídeo(s) encontrado(s)`);
 				
 				if (result.total > 0) {
-					console.log('📹 Detalhes dos vídeos:');
+					console.log('Detalhes dos vídeos:');
 					result.videos.forEach((video, index) => {
-						console.log(`   ${index + 1}. ID: ${video.id} | Título: "${video.title}"`);
-						console.log(`      Status: ${video.processingStatus} | Músicas: ${video.musics.length}`);
-						console.log(`      Upload: ${new Date(video.uploadDate).toLocaleString('pt-BR')}`);
+						console.log(`${index + 1}. ID: ${video.id} | Título: "${video.title}"`);
+						console.log(`Status: ${video.processingStatus} | Músicas: ${video.musics.length}`);
+						console.log(`Upload: ${new Date(video.uploadDate).toLocaleString('pt-BR')}`);
 					});
 				} else {
-					console.log('ℹ️ Nenhum vídeo encontrado no banco de dados');
+					console.log('Nenhum vídeo encontrado no banco de dados');
 				}
 
 				res.json({
@@ -191,15 +189,15 @@ export default class VideoController {
 					total: result.total
 				});
 			} else {
-				console.error(`❌ [GET /videos] Erro ao listar vídeos: ${result.message}`);
+				console.error(`Erro ao listar vídeos: ${result.message}`);
 				res.status(500).json({
 					error: 'Erro ao listar vídeos',
 					message: result.message
 				});
 			}
 		} catch (error) {
-			console.error('❌ [GET /videos] Erro no controller de listagem de vídeos:', error);
-			console.error('   Stack trace:', error instanceof Error ? error.stack : 'N/A');
+			console.error('Erro no controller de listagem de vídeos:', error);
+			console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
 			res.status(500).json({
 				error: 'Erro interno do servidor',
 				message: 'Não foi possível listar os vídeos'
@@ -209,30 +207,30 @@ export default class VideoController {
 
 	async listVideosSummary(req: AuthRequest, res: Response) {
 		try {
-			console.log('📋 [GET /videos/summary] Requisição recebida para listar resumo de vídeos');
+			console.log('Requisição recebida para listar resumo de vídeos');
 			
 			const userId = req.userId;
 
 			if (userId) {
-				console.log(`👤 Usuário autenticado (ID: ${userId}) - Filtrando vídeos do usuário`);
+				console.log(`Usuário autenticado (ID: ${userId}) - Filtrando vídeos do usuário`);
 			} else {
-				console.log('⚠️ Nenhum usuário autenticado - Listando todos os vídeos');
+				console.log('Nenhum usuário autenticado - Listando todos os vídeos');
 			}
 
 			const result = await videoService.listVideosSummary(userId);
 
 			if (result.success) {
-				console.log(`✅ [GET /videos/summary] Sucesso! ${result.total} vídeo(s) encontrado(s)`);
+				console.log(`Sucesso! ${result.total} vídeo(s) encontrado(s)`);
 				
 				if (result.total > 0) {
-					console.log('📹 Detalhes dos vídeos:');
+					console.log('Detalhes dos vídeos:');
 					result.videos.forEach((video, index) => {
-						console.log(`   ${index + 1}. ID: ${video.id} | Título: "${video.title}"`);
-						console.log(`      Status: ${video.processingStatus} | Músicas: ${video.musicCount}`);
-						console.log(`      Upload: ${new Date(video.uploadDate).toLocaleString('pt-BR')}`);
+						console.log(`${index + 1}. ID: ${video.id} | Título: "${video.title}"`);
+						console.log(`Status: ${video.processingStatus} | Músicas: ${video.musicCount}`);
+						console.log(`Upload: ${new Date(video.uploadDate).toLocaleString('pt-BR')}`);
 					});
 				} else {
-					console.log('ℹ️ Nenhum vídeo encontrado no banco de dados');
+					console.log('Nenhum vídeo encontrado no banco de dados');
 				}
 
 				res.json({
@@ -241,15 +239,15 @@ export default class VideoController {
 					total: result.total
 				});
 			} else {
-				console.error(`❌ [GET /videos/summary] Erro ao listar resumo de vídeos: ${result.message}`);
+				console.error(`Erro ao listar resumo de vídeos: ${result.message}`);
 				res.status(500).json({
 					error: 'Erro ao listar resumo de vídeos',
 					message: result.message
 				});
 			}
 		} catch (error) {
-			console.error('❌ [GET /videos/summary] Erro no controller de resumo de vídeos:', error);
-			console.error('   Stack trace:', error instanceof Error ? error.stack : 'N/A');
+			console.error('Erro no controller de resumo de vídeos:', error);
+			console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
 			res.status(500).json({
 				error: 'Erro interno do servidor',
 				message: 'Não foi possível listar o resumo dos vídeos'

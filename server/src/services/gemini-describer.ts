@@ -62,7 +62,7 @@ import {
   
   export async function describeAudio(audioPath: string): Promise<GeminiMusicData> {
     try {
-      console.log(`🤖 Analisando áudio com Gemini: ${audioPath}`);
+      console.log(`Analisando áudio com Gemini: ${audioPath}`);
       
       const ai = getGeminiClient();
       
@@ -80,7 +80,7 @@ import {
       });
 
       const responseText = response.text;
-      console.log(`🤖 Resposta do Gemini: ${responseText}`);
+      console.log(`Resposta do Gemini: ${responseText}`);
 
       let musicData: GeminiMusicData;
       try {
@@ -89,7 +89,7 @@ import {
         }
         musicData = JSON.parse(responseText);
       } catch (parseError) {
-        console.warn('⚠️ Erro ao parsear resposta do Gemini, usando dados padrão');
+        console.warn('Erro ao parsear resposta do Gemini, usando dados padrão');
         musicData = {
           title: "Música Não Identificada",
           artist: "Artista Desconhecido",
@@ -109,7 +109,6 @@ import {
         musicData.isrc = `GEMINI_GENERATED_${Date.now()}`;
       }
 
-      // Ensure genre and keyWords arrays are always present and populated
       if (!musicData.genre || !Array.isArray(musicData.genre) || musicData.genre.length === 0) {
         musicData.genre = ["desconhecido"];
       }
@@ -118,11 +117,11 @@ import {
         musicData.keyWords = ["não identificado", "áudio"];
       }
 
-      console.log(`✅ Dados gerados pelo Gemini:`, musicData);
+      console.log(`Dados gerados pelo Gemini:`, musicData);
       return musicData;
 
     } catch (error) {
-      console.error('❌ Erro ao analisar áudio com Gemini:', error);
+      console.error('Erro ao analisar áudio com Gemini:', error);
 
       return {
         title: "Música Não Identificada",

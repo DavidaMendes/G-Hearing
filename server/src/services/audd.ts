@@ -32,7 +32,7 @@ export class AuddService {
 
 	async recognizeMusic(audioFilePath: string): Promise<AuddResponse> {
 		try {
-			console.log(`🎵 Enviando áudio para audd.io: ${audioFilePath}`);
+			console.log(`Enviando áudio para audd.io: ${audioFilePath}`);
 
 			if (!fs.existsSync(audioFilePath)) {
 				throw new Error(`Arquivo de áudio não encontrado: ${audioFilePath}`);
@@ -54,7 +54,7 @@ export class AuddService {
 
 			const hasResult = !!response.data.result;
 
-			console.log(`✅ Resposta recebida do audd.io:`, {
+			console.log(`Resposta recebida do audd.io:`, {
 				status: response.data.status,
 				hasResult: hasResult,
 				artist: response.data.result?.artist || 'N/A',
@@ -63,7 +63,7 @@ export class AuddService {
 			});
 
 			if (!hasResult) {
-				console.log(`❌ Nenhuma música reconhecida pelo audd.io`);
+				console.log(`Nenhuma música reconhecida pelo audd.io`);
 				return {
 					status: 'error',
 					result: undefined,
@@ -79,7 +79,7 @@ export class AuddService {
 			};
 
 		} catch (error) {
-			console.error('❌ Erro ao reconhecer áudio com audd.io:', error);
+			console.error('Erro ao reconhecer áudio com audd.io:', error);
 
 			if (axios.isAxiosError(error)) {
 				console.error('Detalhes do erro HTTP:', {
@@ -104,7 +104,7 @@ export class AuddService {
 			const audioFile = audioFiles[i];
 
 			if (!audioFile) {
-				console.error(`❌ Arquivo de áudio não encontrado no índice ${i + 1}`);
+				console.error(`Arquivo de áudio não encontrado no índice ${i + 1}`);
 				results.push({
 					status: 'error',
 					result: undefined,
@@ -122,7 +122,7 @@ export class AuddService {
 					await new Promise(resolve => setTimeout(resolve, 1000));
 				}
 			} catch (error) {
-				console.error(`❌ Erro ao processar segmento ${i + 1}:`, error);
+				console.error(`Erro ao processar segmento ${i + 1}:`, error);
 				results.push({
 					status: 'error',
 					result: undefined,
@@ -132,7 +132,7 @@ export class AuddService {
 		}
 
 		const successCount = results.filter(r => r.status === 'success').length;
-		console.log(`✅ Reconhecimento concluído: ${successCount}/${audioFiles.length} sucessos`);
+		console.log(`Reconhecimento concluído: ${successCount}/${audioFiles.length} sucessos`);
 
 		return results;
 	}

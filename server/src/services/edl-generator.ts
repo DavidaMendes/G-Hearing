@@ -66,7 +66,7 @@ export async function generateEdlForVideo(
 
   fs.writeFileSync(edlFilePath, edlContent, 'utf8');
   
-  console.log(`✅ EDL file generated: ${edlFilePath}`);
+  console.log(`Arquivo EDL gerado: ${edlFilePath}`);
   
   return edlFilePath;
 }
