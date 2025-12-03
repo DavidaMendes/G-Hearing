@@ -153,6 +153,10 @@ npx prisma migrate deploy
 npx prisma studio
 ```
 
+### Documentação do servidor
+
+A documentação do servidor pode ser acessada através da rota http://localhost:3333/api-docs
+
 ## 🔧 Configuração do ambiente
 
 ### Variáveis de ambiente (.env)

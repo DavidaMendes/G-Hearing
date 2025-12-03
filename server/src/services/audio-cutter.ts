@@ -7,14 +7,12 @@ export class AudioCutterService {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   }
 
-  /** Accepts "ss", "mm:ss(.ms)" or "hh:mm:ss(.ms)" and returns number of seconds */
   private toSeconds(ts: string): number {
     if (!ts) return NaN;
-    // If it's already a number-like string
     if (/^\d+(\.\d+)?$/.test(ts)) return Number(ts);
 
     const parts = ts.split(':');
-    const parseLast = (s: string) => Number(s); // supports "ss" or "ss.ms"
+    const parseLast = (s: string) => Number(s);
 
     if (parts.length === 2) {
       const [mm, ss] = parts;
@@ -63,7 +61,6 @@ export class AudioCutterService {
 
     const duration = end - start;
 
-    // Put -ss AFTER -i for accuracy; use -t (duration) for robustness
     const args = [
       '-v', 'error',
       '-i', audioPath,
@@ -108,7 +105,7 @@ export class AudioCutterService {
         const out = await this.cutAudioSegment(audioPath, [seg[0]!, seg[1]!], outFile);
         outputs.push(out);
       } catch (err) {
-        console.error(`Failed segment ${i + 1} [${seg[0]} - ${seg[1]}]:`, err);
+        console.error(`Falha ao processar segmento ${i + 1} [${seg[0]} - ${seg[1]}]:`, err);
       }
     }
 
@@ -120,10 +117,10 @@ export class AudioCutterService {
       try {
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
-          console.log(`🗑️ Removed: ${filePath}`);
+          console.log(`Arquivo removido: ${filePath}`);
         }
       } catch (error) {
-        console.error('Error removing file:', error);
+        console.error('Erro ao remover arquivo:', error);
       }
     }
   }

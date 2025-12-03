@@ -36,7 +36,7 @@ export interface VideoMusicRelation {
 
 export class DatabaseService {
 	async createVideo(videoData: VideoData) {
-		console.log(`💾 Criando vídeo no banco: ${videoData.title}`);
+		console.log(`Criando vídeo no banco: ${videoData.title}`);
 
 		const video = await prisma.video.create({
 			data: {
@@ -50,12 +50,12 @@ export class DatabaseService {
 			}
 		});
 
-		console.log(`✅ Vídeo criado com ID: ${video.id}`);
+		console.log(`Vídeo criado com ID: ${video.id}`);
 		return video;
 	}
 
 	async updateVideoStatus(videoId: number, status: string, unrecognizedCount?: number) {
-		console.log(`🔄 Atualizando status do vídeo ${videoId}: ${status}`);
+		console.log(`Atualizando status do vídeo ${videoId}: ${status}`);
 
 		const updateData: any = { processing_status: status };
 		if (unrecognizedCount !== undefined) {
@@ -67,32 +67,32 @@ export class DatabaseService {
 			data: updateData
 		});
 
-		console.log(`✅ Status atualizado: ${video.processing_status}`);
+		console.log(`Status atualizado: ${video.processing_status}`);
 		return video;
 	}
 
 	async updateVideoAudioPath(videoId: number, audioPath: string) {
-		console.log(`🎵 Salvando caminho do áudio para vídeo ${videoId}: ${audioPath}`);
+		console.log(`Salvando caminho do áudio para vídeo ${videoId}: ${audioPath}`);
 
 		const video = await prisma.video.update({
 			where: { id: videoId },
 			data: { audio_path: audioPath }
 		});
 
-		console.log(`✅ Caminho do áudio salvo: ${video.audio_path}`);
+		console.log(`Caminho do áudio salvo: ${video.audio_path}`);
 
 		return video;
 	}
 
 	async createMusic(musicData: MusicData) {
-		console.log(`🎵 Buscando/criando música: ${musicData.artist} - ${musicData.title}`);
+		console.log(`Buscando/criando música: ${musicData.artist} - ${musicData.title}`);
 
 		let music = await prisma.music.findUnique({
 			where: { isrc: musicData.isrc }
 		});
 
 		if (!music) {
-			console.log(`➕ Criando nova música no banco`);
+			console.log(`Criando nova música no banco`);
 			music = await prisma.music.create({
 				data: {
 					title: musicData.title,
@@ -108,9 +108,9 @@ export class DatabaseService {
 					key_words: musicData.keyWords || []
 				}
 			});
-			console.log(`✅ Música criada com ID: ${music.id}`);
+			console.log(`Música criada com ID: ${music.id}`);
 		} else {
-			console.log(`♻️ Música já existe com ID: ${music.id}`);
+			console.log(`Música já existe com ID: ${music.id}`);
 		}
 
 		return music;
@@ -133,7 +133,7 @@ export class DatabaseService {
 	}
 
 	async createVideoMusicRelation(relation: VideoMusicRelation) {
-		console.log(`🔗 Criando relação vídeo-música: ${relation.videoId} ↔ ${relation.musicId}`);
+		console.log(`Criando relação vídeo-música: ${relation.videoId} ↔ ${relation.musicId}`);
 
 		const videoMusic = await prisma.videoMusic.create({
 			data: {
@@ -145,7 +145,7 @@ export class DatabaseService {
 			}
 		});
 
-		console.log(`✅ Relação criada com ID: ${videoMusic.id}${relation.audioSegmentPath ? ` (áudio: ${relation.audioSegmentPath})` : ''}`);
+		console.log(`Relação criada com ID: ${videoMusic.id}${relation.audioSegmentPath ? ` (áudio: ${relation.audioSegmentPath})` : ''}`);
 		return videoMusic;
 	}
 
@@ -193,7 +193,7 @@ export class DatabaseService {
 	}
 
 	async deleteVideo(videoId: number) {
-		console.log(`🗑️ Deletando vídeo: ${videoId}`);
+		console.log(`Deletando vídeo: ${videoId}`);
 
 		const video = await prisma.video.findUnique({
 			where: { id: videoId }
@@ -202,12 +202,12 @@ export class DatabaseService {
 		if (video) {
 			if (fs.existsSync(video.file_path)) {
 				fs.unlinkSync(video.file_path);
-				console.log(`🗑️ Arquivo de vídeo removido: ${video.file_path}`);
+				console.log(`Arquivo de vídeo removido: ${video.file_path}`);
 			}
 
 			if (video.audio_path && fs.existsSync(video.audio_path)) {
 				fs.unlinkSync(video.audio_path);
-				console.log(`🗑️ Arquivo de áudio removido: ${video.audio_path}`);
+				console.log(`Arquivo de áudio removido: ${video.audio_path}`);
 			}
 		}
 
@@ -215,6 +215,6 @@ export class DatabaseService {
 			where: { id: videoId }
 		});
 
-		console.log(`✅ Vídeo deletado: ${videoId}`);
+		console.log(`Vídeo deletado: ${videoId}`);
 	}
 }

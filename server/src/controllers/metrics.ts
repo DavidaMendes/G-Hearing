@@ -29,7 +29,7 @@ export default class MetricsController {
 				});
 			}
 		} catch (error) {
-			console.error('❌ [GET /metrics/mais-usados] Erro no controller:', error);
+			console.error('Erro no controller ao buscar músicas mais usadas:', error);
 			res.status(500).json({
 				error: 'Erro interno do servidor',
 				message: 'Não foi possível buscar as músicas mais usadas'
@@ -54,7 +54,7 @@ export default class MetricsController {
 				});
 			}
 		} catch (error) {
-			console.error('❌ [GET /metrics/quantidade-trilhas-ultimo-mes] Erro no controller:', error);
+			console.error('Erro no controller ao buscar quantidade de trilhas:', error);
 			res.status(500).json({
 				error: 'Erro interno do servidor',
 				message: 'Não foi possível buscar a quantidade de trilhas'

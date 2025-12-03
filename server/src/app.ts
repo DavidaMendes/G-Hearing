@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
 import routes from './routes/index.js';
+import { swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
@@ -22,6 +24,11 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '2gb' }));
 app.use(express.urlencoded({ limit: '2gb', extended: true }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+	customCss: '.swagger-ui .topbar { display: none }',
+	customSiteTitle: 'G-Hearing API Documentation'
+}));
 
 app.use('/', routes);
 

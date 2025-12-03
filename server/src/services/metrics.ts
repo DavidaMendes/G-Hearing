@@ -41,7 +41,7 @@ export class MetricsService {
 				musics: result
 			};
 		} catch (error) {
-			console.error('❌ [MetricsService] Erro ao buscar músicas mais usadas:', error);
+			console.error('Erro ao buscar músicas mais usadas:', error);
 			return {
 				success: false,
 				message: `Erro ao buscar músicas mais usadas: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
@@ -72,7 +72,7 @@ export class MetricsService {
 				}
 			};
 		} catch (error) {
-			console.error('❌ [MetricsService] Erro ao buscar quantidade de trilhas:', error);
+			console.error('Erro ao buscar quantidade de trilhas:', error);
 			return {
 				success: false,
 				message: `Erro ao buscar quantidade de trilhas: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,

@@ -45,30 +45,27 @@ export class VideoService {
 
 			audioPaths = await this.ffmpegService.extractAudioFromMXF(videoPath);
 
-			console.log('🔍 Iniciando detecção de segmentos de música...');
+			console.log('Iniciando detecção de segmentos de música');
 			let segments: string[][] = [];
 
 			for (const audioPath of audioPaths) {
 				const audioSegments = await this.musicDetectionService.detectSegments(audioPath);
-				console.log(`✅ Segmentos detectados: ${audioSegments.length}`);
-				audioSegments.forEach((s, i) => console.log(`   ${i + 1}. ${s[0]} - ${s[1]}`));
+				console.log(`Segmentos detectados: ${audioSegments.length}`);
+				audioSegments.forEach((s, i) => console.log(`${i + 1}. ${s[0]} - ${s[1]}`));
 			  
 				const outFiles = await this.audioCutterService.cutAllSegments(audioPath, audioSegments);
 				
-				// Acumula os segmentos e arquivos cortados de todos os áudios
 				segments = segments.concat(audioSegments);
 				cutFiles = cutFiles.concat(outFiles);
 			}
 
 			const recognitionResults = await this.auddService.recognizeAllSegments(cutFiles);
 
-			// Process recognition results and use Gemini as fallback for failed recognitions
 			const processedResults = await Promise.all(
 				recognitionResults.map(async (result, index) => {
 					const segment = segments[index];
 					const cutFile = cutFiles[index];
 
-					// If Audd recognition was successful, use it
 					if (result.status === 'success' && 
 						result.result &&
 						result.result.artist &&
@@ -81,13 +78,11 @@ export class VideoService {
 						};
 					}
 
-					// If Audd failed and we have a cut file, try Gemini as fallback
 					if (cutFile && fs.existsSync(cutFile) && isGeminiAvailable()) {
-						console.log(`🤖 Audd falhou para segmento ${index + 1}, tentando Gemini...`);
+						console.log(`Audd falhou para segmento ${index + 1}, tentando Gemini`);
 						try {
 							const geminiData = await describeAudio(cutFile);
 							
-							// Convert Gemini data to Audd-like format for consistency
 							const geminiResult = {
 								status: 'success' as const,
 								result: {
@@ -112,7 +107,7 @@ export class VideoService {
 								audioSegmentPath: cutFile
 							};
 						} catch (geminiError) {
-							console.error(`❌ Gemini também falhou para segmento ${index + 1}:`, geminiError);
+							console.error(`Gemini também falhou para segmento ${index + 1}:`, geminiError);
 							return {
 								segment,
 								recognition: result,
@@ -143,7 +138,7 @@ export class VideoService {
 			const auddCount = recognizedSongs.filter(song => song.source === 'audd').length;
 			const geminiCount = recognizedSongs.filter(song => song.source === 'gemini').length;
 
-			console.log(`   📊 Audd: ${auddCount}, Gemini: ${geminiCount}, Não reconhecidas: ${unrecognizedCount}`);
+			console.log(`Audd: ${auddCount}, Gemini: ${geminiCount}, Não reconhecidas: ${unrecognizedCount}`);
 
 			for (const song of recognizedSongs) {
 				const musicData = {
@@ -219,13 +214,12 @@ export class VideoService {
 				videoId: videoRecord?.id
 			};
 		} finally {
-			// Remove apenas o arquivo de vídeo original, mantendo os áudios extraídos e cortados
 			if (videoPath && fs.existsSync(videoPath)) {
 				try {
 					fs.unlinkSync(videoPath);
-					console.log(`🗑️ Arquivo de vídeo removido: ${videoPath}`);
+					console.log(`Arquivo de vídeo removido: ${videoPath}`);
 				} catch (error) {
-					console.error(`⚠️ Erro ao remover arquivo de vídeo: ${error}`);
+					console.error(`Erro ao remover arquivo de vídeo: ${error}`);
 				}
 			}
 		}
@@ -253,7 +247,7 @@ export class VideoService {
 				message: 'Vídeo deletado com sucesso'
 			};
 		} catch (error) {
-			console.error('❌ [VideoService] Erro ao deletar vídeo:', error);
+			console.error('Erro ao deletar vídeo:', error);
 			return {
 				success: false,
 				message: `Erro ao deletar vídeo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
@@ -280,11 +274,11 @@ export class VideoService {
 
 	async listVideos(userId?: number) {
 		try {
-			console.log(`🔍 [VideoService] Buscando vídeos${userId ? ` para usuário ID: ${userId}` : ' (todos os usuários)'}`);
+			console.log(`Buscando vídeos${userId ? ` para usuário ID: ${userId}` : ' (todos os usuários)'}`);
 			
 			const videos = await this.databaseService.getAllVideos(userId);
 			
-			console.log(`📊 [VideoService] ${videos.length} vídeo(s) encontrado(s) no banco de dados`);
+			console.log(`${videos.length} vídeo(s) encontrado(s) no banco de dados`);
 			
 			return {
 				success: true,
@@ -327,9 +321,9 @@ export class VideoService {
 				total: videos.length
 			};
 		} catch (error) {
-			console.error('❌ [VideoService] Erro ao listar vídeos:', error);
-			console.error('   Detalhes:', error instanceof Error ? error.message : 'Erro desconhecido');
-			console.error('   Stack:', error instanceof Error ? error.stack : 'N/A');
+			console.error('Erro ao listar vídeos:', error);
+			console.error('Detalhes:', error instanceof Error ? error.message : 'Erro desconhecido');
+			console.error('Stack:', error instanceof Error ? error.stack : 'N/A');
 			return {
 				success: false,
 				message: `Erro ao listar vídeos: ${
@@ -343,11 +337,11 @@ export class VideoService {
 
 	async listVideosSummary(userId?: number) {
 		try {
-			console.log(`🔍 [VideoService] Buscando resumo de vídeos${userId ? ` para usuário ID: ${userId}` : ' (todos os usuários)'}`);
+			console.log(`Buscando resumo de vídeos${userId ? ` para usuário ID: ${userId}` : ' (todos os usuários)'}`);
 			
 			const videos = await this.databaseService.getAllVideos(userId);
 			
-			console.log(`📊 [VideoService] ${videos.length} vídeo(s) encontrado(s) no banco de dados`);
+			console.log(`${videos.length} vídeo(s) encontrado(s) no banco de dados`);
 			
 			return {
 				success: true,
@@ -373,9 +367,9 @@ export class VideoService {
 				total: videos.length
 			};
 		} catch (error) {
-			console.error('❌ [VideoService] Erro ao listar resumo de vídeos:', error);
-			console.error('   Detalhes:', error instanceof Error ? error.message : 'Erro desconhecido');
-			console.error('   Stack:', error instanceof Error ? error.stack : 'N/A');
+			console.error('Erro ao listar resumo de vídeos:', error);
+			console.error('Detalhes:', error instanceof Error ? error.message : 'Erro desconhecido');
+			console.error('Stack:', error instanceof Error ? error.stack : 'N/A');
 			return {
 				success: false,
 				message: `Erro ao listar resumo de vídeos: ${
