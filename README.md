@@ -152,11 +152,6 @@ npx prisma migrate deploy
 # Ver banco no Prisma Studio
 npx prisma studio
 ```
-
-### Documentação do servidor
-
-A documentação do servidor pode ser acessada através da rota http://localhost:3333/api-docs
-
 ## 🔧 Configuração do ambiente
 
 ### Variáveis de ambiente (.env)
@@ -182,6 +177,10 @@ GEMINI_API_KEY=SUA CHAVE
 - **Senha**: password
 
 ## 🧪 Testando a API
+
+### Documentação do servidor
+
+A documentação do servidor pode ser acessada através da rota `http://localhost:3333/api-docs`
 
 ### Autenticar usuário padrão
 ```bash
